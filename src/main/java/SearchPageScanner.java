@@ -2,39 +2,36 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.CountDownLatch;
+import java.util.Random;
+import java.util.concurrent.Callable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class SearchPageScanner implements Runnable {
+public class SearchPageScanner implements Callable<List<String>> {
 
     private String pageUrl;
-    private List<String> advertUrls;
-    private CountDownLatch latch;
+    private Random random;
 
-    public SearchPageScanner(String pageUrl, List<String> advertUrls, CountDownLatch latch) {
+    public SearchPageScanner(String pageUrl, Random random) {
         this.pageUrl = pageUrl;
-        this.advertUrls = advertUrls;
-        this.latch = latch;
+        this.random = random;
     }
 
     @Override
-    public void run() {
+    public List<String> call() throws Exception {
         Document document;
         try {
             document = Jsoup.connect(pageUrl).get();
         } catch (IOException e) {
             Logger.getLogger(getClass().getName())
                     .log(Level.SEVERE, "Could not connect to search results page", e);
-            latch.countDown();
-            return;
+            return Collections.emptyList();
         }
 
-        PageParser parser = new PageParser(document);
-        List<String> text = parser.selectElementsWithClass("div", "title").getAsText();
-        System.out.println(pageUrl + " Titles: " + text);
-        advertUrls.addAll(text);
-        latch.countDown();
+        return new PageParser(document)
+                .selectElementsWithClass("div", "title")
+                .getLinks();
     }
 }

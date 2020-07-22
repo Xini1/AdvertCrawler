@@ -16,11 +16,11 @@ public class PageParser {
         return this;
     }
 
-    public PageParser selectElementsWithAttribute(String elementName, String attribute) {
-        return this;
-    }
-
     public List<String> getAsText() {
         return result.eachText();
+    }
+
+    public List<String> getLinks() {
+        return result.select("a").eachAttr("abs:href");
     }
 }
