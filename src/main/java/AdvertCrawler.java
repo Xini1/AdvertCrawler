@@ -2,10 +2,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Random;
+import java.util.*;
 import java.util.concurrent.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -14,52 +11,20 @@ import java.util.stream.Collectors;
 public class AdvertCrawler {
 
     private String searchResultsUrl;
-    private ExecutorService executorService;
-    private Random random;
+
+    private Logger logger = Logger.getLogger(getClass().getName());
 
     public AdvertCrawler(String searchResultsUrl) {
         this.searchResultsUrl = searchResultsUrl;
-        executorService = Executors.newFixedThreadPool(10);
-        random = new Random();
     }
 
     public AdvertContainer getAdvertContainer() {
         int pagesTotal = getPagesTotal();
-
-        List<Callable<List<String>>> tasks = new ArrayList<>();
-        for (int i = 1; i <= pagesTotal; i++) {
-            String pageUrl = searchResultsUrl + i + '/';
-            tasks.add(new SearchPageScanner(pageUrl, random));
-        }
-
-        List<Future<List<String>>> futures;
-        try {
-            futures = executorService.invokeAll(tasks);
-        } catch (InterruptedException e) {
-            Logger.getLogger(getClass().getName())
-                    .log(Level.SEVERE, "Interrupted waiting for scanning search results pages", e);
-            return null;
-        }
-
-        List<String> advertLinks = futures.stream()
-                .map(listFuture -> {
-                    try {
-                        return listFuture.get();
-                    } catch (InterruptedException | ExecutionException e) {
-                        Logger.getLogger(getClass().getName())
-                                .log(Level.SEVERE, "Interrupted getting links", e);
-                    }
-                    return null;
-                })
-                .filter(Objects::nonNull)
-                .flatMap(List::stream)
-                .distinct()
-                .collect(Collectors.toList());
-        executorService.shutdown();
-
-        System.out.println(advertLinks.size());
-        advertLinks.forEach(System.out::println);
-
+        System.out.println("Total number of pages acquired = " + pagesTotal);
+        List<String> advertLinks = getAdvertLinks(pagesTotal);
+        System.out.println("Advert links collected, total = " + advertLinks.size());
+        List<Advert> adverts = parseAdverts(advertLinks);
+        System.out.println("Adverts constructed, total = " + adverts.size());
         return null;
     }
 
@@ -68,17 +33,88 @@ public class AdvertCrawler {
         try {
             document = Jsoup.connect(searchResultsUrl).get();
         } catch (IOException e) {
-            Logger.getLogger(getClass().getName())
-                    .log(Level.SEVERE, "Could not connect to search results page", e);
+            logger.log(Level.SEVERE, e, () -> "Could not connect to search results page " + searchResultsUrl);
             return 0;
         }
 
-        PageParser parser = new PageParser(document);
-        List<String> pages = parser.selectElementsWithClass("div", "page-link").getAsText();
-        System.out.println("pages " + pages);
+        List<String> pages = new PageParser(document)
+                .selectElementsWithClass("div", "page-link")
+                .getAsText();
+
         return pages.stream()
                 .mapToInt(Integer::parseInt)
                 .max()
                 .orElse(1);
+    }
+
+    private List<String> getAdvertLinks(int pagesTotal) {
+        ExecutorService executorService = Executors.newFixedThreadPool(10);
+        List<Callable<List<String>>> tasks = new ArrayList<>();
+
+        for (int i = 1; i <= pagesTotal; i++) {
+            String pageUrl = searchResultsUrl + i + '/';
+            tasks.add(new SearchPageScanner(pageUrl));
+        }
+
+        List<Future<List<String>>> futures;
+
+        try {
+            futures = executorService.invokeAll(tasks);
+        } catch (InterruptedException e) {
+            logger.log(Level.SEVERE, "Interrupted invoking execution of page scanners", e);
+            return Collections.emptyList();
+        }
+
+        List<String> advertLinks = futures.stream()
+                .map(listFuture -> {
+                    try {
+                        return listFuture.get();
+                    } catch (InterruptedException | ExecutionException e) {
+                        logger.log(Level.SEVERE, "Interrupted getting links", e);
+                        return null;
+                    }
+
+                })
+                .filter(Objects::nonNull)
+                .flatMap(List::stream)
+                .distinct()
+                .collect(Collectors.toList());
+
+        executorService.shutdown();
+
+        return advertLinks;
+    }
+
+    private List<Advert> parseAdverts(List<String> advertLinks) {
+        ExecutorService executorService = Executors.newFixedThreadPool(10);
+        List<Callable<Advert>> tasks = advertLinks.stream()
+                .map(AdvertBuilder::new)
+                .collect(Collectors.toList());
+
+        List<Future<Advert>> futures;
+
+        try {
+            futures = executorService.invokeAll(tasks);
+        } catch (InterruptedException e) {
+            logger.log(Level.SEVERE, "Interrupted invoking execution of advert builders", e);
+            return Collections.emptyList();
+        }
+
+        List<Advert> adverts = futures.stream()
+                .map(listFuture -> {
+                    try {
+                        return listFuture.get();
+                    } catch (InterruptedException | ExecutionException e) {
+                        logger.log(Level.SEVERE, "Interrupted getting adverts", e);
+                        return null;
+                    }
+
+                })
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
+
+        executorService.shutdown();
+
+        return adverts;
     }
 }

@@ -12,11 +12,9 @@ import java.util.logging.Logger;
 public class SearchPageScanner implements Callable<List<String>> {
 
     private String pageUrl;
-    private Random random;
 
-    public SearchPageScanner(String pageUrl, Random random) {
+    public SearchPageScanner(String pageUrl) {
         this.pageUrl = pageUrl;
-        this.random = random;
     }
 
     @Override
@@ -26,7 +24,7 @@ public class SearchPageScanner implements Callable<List<String>> {
             document = Jsoup.connect(pageUrl).get();
         } catch (IOException e) {
             Logger.getLogger(getClass().getName())
-                    .log(Level.SEVERE, "Could not connect to search results page", e);
+                    .log(Level.WARNING, e, () -> "Could not connect to search results page " + pageUrl);
             return Collections.emptyList();
         }
 

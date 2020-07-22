@@ -1,11 +1,29 @@
 public class Advert {
 
+    private String advertUrl;
+    private String title;
     private String address;
     private int area;
-    private int floor;
+    private float floor;
     private int totalFloors;
     private int price;
     private String phoneNumber;
+
+    public String getAdvertUrl() {
+        return advertUrl;
+    }
+
+    public void setAdvertUrl(String advertUrl) {
+        this.advertUrl = advertUrl;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
 
     public String getAddress() {
         return address;
@@ -23,11 +41,11 @@ public class Advert {
         this.area = area;
     }
 
-    public int getFloor() {
+    public float getFloor() {
         return floor;
     }
 
-    public void setFloor(int floor) {
+    public void setFloor(float floor) {
         this.floor = floor;
     }
 
