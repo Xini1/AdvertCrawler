@@ -1,3 +1,9 @@
+package utils;
+
+import model.Advert;
+import model.AdvertContainer;
+import model.PriceHistory;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Deque;

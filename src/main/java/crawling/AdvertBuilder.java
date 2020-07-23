@@ -1,5 +1,10 @@
+package crawling;
+
+import model.Advert;
+import model.PriceHistory;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import utils.PageParser;
 
 import java.io.IOException;
 import java.time.LocalDate;

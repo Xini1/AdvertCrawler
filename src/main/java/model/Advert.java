@@ -1,7 +1,8 @@
+package model;
+
 import java.time.LocalDate;
-import java.util.Deque;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class Advert {
 
@@ -85,6 +86,62 @@ public class Advert {
 
     public void setLastEditDate(LocalDate lastEditDate) {
         this.lastEditDate = lastEditDate;
+    }
+
+    public static Advert parseCsv(Iterator<String> iterator) {
+        Advert advert = new Advert();
+
+        advert.setAdvertUrl(iterator.next());
+        advert.setTitle(iterator.next());
+        advert.setAddress(iterator.next());
+        advert.setArea(Float.parseFloat(iterator.next()));
+        advert.setFloor(Integer.parseInt(iterator.next()));
+        advert.setTotalFloors(Integer.parseInt(iterator.next()));
+
+        Deque<PriceHistory> priceHistoryDeque = new LinkedList<>();
+        int priceHistoryCount = Integer.parseInt(iterator.next());
+        for (int i = 0; i < priceHistoryCount; i++) {
+            PriceHistory priceHistory = PriceHistory.parseCsv(iterator);
+            priceHistoryDeque.addFirst(priceHistory);
+        }
+        advert.setPriceHistoryDeque(priceHistoryDeque);
+
+        List<String> phoneNumbers = new ArrayList<>();
+        int phoneNumbersCount = Integer.parseInt(iterator.next());
+        for (int i = 0; i < phoneNumbersCount; i++) {
+            phoneNumbers.add(iterator.next());
+        }
+        advert.setPhoneNumbers(phoneNumbers);
+
+        advert.setLastEditDate(LocalDate.parse(iterator.next()));
+
+        return advert;
+    }
+
+    public String toCsv() {
+        StringBuilder builder = new StringBuilder();
+
+        builder.append(advertUrl).append(';')
+                .append(title).append(';')
+                .append(address).append(';')
+                .append(area).append(';')
+                .append(floor).append(';')
+                .append(totalFloors).append(';')
+                .append(priceHistoryDeque.size()).append(';');
+
+        String priceHistoryCsvString = priceHistoryDeque.stream()
+                .map(PriceHistory::toCsv)
+                .collect(Collectors.joining(";"));
+
+        builder.append(priceHistoryCsvString).append(';')
+                .append(phoneNumbers.size()).append(';');
+
+        String phoneNumbersCsvString = String.join(";", phoneNumbers);
+
+        builder.append(phoneNumbersCsvString).append(';')
+                .append(lastEditDate);
+
+        return builder.toString();
     }
 
     @Override

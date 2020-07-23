@@ -1,4 +1,7 @@
+package model;
+
 import java.time.LocalDate;
+import java.util.Iterator;
 import java.util.Objects;
 
 public class PriceHistory {
@@ -20,6 +23,17 @@ public class PriceHistory {
 
     public void setDate(LocalDate date) {
         this.date = date;
+    }
+
+    public static PriceHistory parseCsv(Iterator<String> iterator) {
+        PriceHistory priceHistory = new PriceHistory();
+        priceHistory.setPrice(Integer.parseInt(iterator.next()));
+        priceHistory.setDate(LocalDate.parse(iterator.next()));
+        return priceHistory;
+    }
+
+    public String toCsv() {
+        return price + ";" + date.toString();
     }
 
     @Override

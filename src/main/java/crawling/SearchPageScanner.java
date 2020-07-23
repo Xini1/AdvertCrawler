@@ -1,10 +1,12 @@
+package crawling;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import utils.PageParser;
 
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
-import java.util.Random;
 import java.util.concurrent.Callable;
 import java.util.logging.Level;
 import java.util.logging.Logger;

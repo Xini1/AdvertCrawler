@@ -1,3 +1,9 @@
+import model.Advert;
+import model.AdvertContainer;
+import model.PriceHistory;
+import utils.AdvertContainerMerger;
+import utils.FilesUtils;
+
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.time.LocalDate;
@@ -12,16 +18,17 @@ public class Runner {
         loadLoggingProperties();
 
 //        String searchResultsUrl="https://www.moyareklama.by/search/%D0%93%D0%BE%D0%BC%D0%B5%D0%BB%D1%8C/c56950abe5d86434d5e08455380399be/";
-//        AdvertCrawler crawler = new AdvertCrawler(searchResultsUrl);
+//        crawling.AdvertCrawler crawler = new crawling.AdvertCrawler(searchResultsUrl);
 //        crawler.getAdvertContainer();
         AdvertContainer container1 = getFirstAdvertContainer();
         container1.getAdverts().forEach(System.out::println);
         System.out.println();
-        AdvertContainer container2 = getSecondAdvertContainer();
-        container2.getAdverts().forEach(System.out::println);
-        System.out.println();
-        new AdvertContainerMerger().merge(container1, container2).getAdverts().forEach(System.out::println);
-        System.out.println();
+
+        FilesUtils filesUtils = new FilesUtils();
+        filesUtils.writeToFile(container1.toCsv(), "container.save");
+        String text = filesUtils.readFromFile("container.save");
+        AdvertContainer parsedContainer = AdvertContainer.parseCsv(text);
+        parsedContainer.getAdverts().forEach(System.out::println);
     }
 
     private static AdvertContainer getFirstAdvertContainer() {

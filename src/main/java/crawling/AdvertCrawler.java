@@ -1,5 +1,10 @@
+package crawling;
+
+import model.Advert;
+import model.AdvertContainer;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import utils.PageParser;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -30,7 +35,7 @@ public class AdvertCrawler {
         System.out.println("Total number of pages acquired = " + pagesTotal);
         try {
             List<String> advertLinks = getAdvertLinks(pagesTotal);
-            System.out.println("Advert links collected, total = " + advertLinks.size());
+            System.out.println("Model.Advert links collected, total = " + advertLinks.size());
             List<Advert> adverts = parseAdverts(advertLinks);
             System.out.println("Adverts constructed, total = " + adverts.size());
             adverts.forEach(System.out::println);
