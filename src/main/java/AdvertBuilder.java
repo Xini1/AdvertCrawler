@@ -2,9 +2,8 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.time.LocalDate;
+import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -15,16 +14,18 @@ import java.util.stream.Collectors;
 
 public class AdvertBuilder implements Callable<Advert> {
 
+    private LocalDate date;
     private String advertUrl;
     private String title;
     private String address;
     private float area;
     private int floor;
     private int totalFloors;
-    private int price;
-    private String phoneNumber;
+    private PriceHistory priceHistory;
+    private List<String> phoneNumbers;
 
-    public AdvertBuilder(String advertUrl) {
+    public AdvertBuilder(LocalDate date, String advertUrl) {
+        this.date = date;
         this.advertUrl = advertUrl;
     }
 
@@ -54,12 +55,10 @@ public class AdvertBuilder implements Callable<Advert> {
                 .getAsTextLast();
 
         area = parseArea(document);
-
         floor = parseFloor(document);
-
         totalFloors = parseTotalFloors(document);
-
-        System.out.println(advertUrl + ' ' + floor + ' ' + totalFloors);
+        priceHistory = getPrice(document);
+        phoneNumbers = parsePhoneNumber(document);
     }
 
     private float parseArea(Document document) {
@@ -76,18 +75,18 @@ public class AdvertBuilder implements Callable<Advert> {
     }
 
     private int parseFloor(Document document) {
-        List<Integer> numbers = getFloorsFromPage(document);
+        List<String> numberStrings = getFloorsFromPage(document);
 
-        return numbers.size() > 0 ? numbers.get(0) : 0;
+        return numberStrings.size() == 2 ? Integer.parseInt(numberStrings.get(0)) : 0;
     }
 
     private int parseTotalFloors(Document document) {
-        List<Integer> numbers = getFloorsFromPage(document);
+        List<String> numberStrings = getFloorsFromPage(document);
 
-        return numbers.size() > 1 ? numbers.get(1) : 0;
+        return numberStrings.size() == 2 ? Integer.parseInt(numberStrings.get(1)) : 0;
     }
 
-    private List<Integer> getFloorsFromPage(Document document) {
+    private List<String> getFloorsFromPage(Document document) {
         String elementString = new PageParser(document)
                 .selectElementsWithClass("div", "floor")
                 .getAsTextFirst();
@@ -95,21 +94,76 @@ public class AdvertBuilder implements Callable<Advert> {
         return findNumbersInString(elementString);
     }
 
-    private List<Integer> findNumbersInString(String elementString) {
-        List<Integer> number = new ArrayList<>();
+    private PriceHistory getPrice(Document document) {
+        PriceHistory priceHistory = new PriceHistory();
+        priceHistory.setDate(date);
 
+        String priceOnPage = new PageParser(document)
+                .selectElementsWithClass("div", "price")
+                .getAsTextFirst();
+
+        if (!priceOnPage.endsWith("р.")) {
+            return priceHistory;
+        }
+
+        String priceString = String.join("", findNumbersInString(priceOnPage));
+
+        priceHistory.setPrice(Integer.parseInt(priceString));
+
+        return priceHistory;
+    }
+
+    private List<String> parsePhoneNumber(Document document) {
+        String phonesOnPage = new PageParser(document)
+                .selectElementsWithClass("div", "phones")
+                .getAsTextFirst();
+
+        List<String> stringsWithNumbers = Arrays.stream(phonesOnPage.split(","))
+                .filter(s -> s.matches(".*\\d+.*"))
+                .collect(Collectors.toList());
+
+        return formatPhoneNumbers(stringsWithNumbers);
+    }
+
+    private List<String> formatPhoneNumbers(List<String> phoneStrings) {
+        return phoneStrings.stream()
+                .map(phoneString -> String.join("", findNumbersInString(phoneString)))
+                .filter(phoneString -> phoneString.length() >= 6)
+                .map(phoneString -> phoneString.startsWith("80") ?
+                        phoneString.replaceFirst("80", "+375") : phoneString)
+                //.peek(System.out::println)
+                .map(phoneString -> phoneString.length() == 6 ?
+                        "+375232" + phoneString : phoneString)
+                //.peek(System.out::println)
+                .filter(phoneString -> phoneString.matches("\\+375\\d{9}"))
+                .collect(Collectors.toList());
+    }
+
+    private List<String> findNumbersInString(String elementString) {
         String regex = "\\d+";
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(elementString);
 
         return matcher.results()
                 .map(MatchResult::group)
-                .map(Integer::parseInt)
                 .collect(Collectors.toList());
     }
 
     private Advert getAdvert() {
         Advert advert = new Advert();
+
+        advert.setAdvertUrl(advertUrl);
+        advert.setTitle(title);
+        advert.setAddress(address);
+        advert.setArea(area);
+        advert.setFloor(floor);
+        advert.setTotalFloors(totalFloors);
+        advert.setPhoneNumbers(phoneNumbers);
+
+        Deque<PriceHistory> priceHistoryDeque = new LinkedList<>();
+        priceHistoryDeque.offerFirst(priceHistory);
+        advert.setPriceHistoryDeque(priceHistoryDeque);
+
         return advert;
     }
 }

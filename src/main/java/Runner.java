@@ -9,7 +9,7 @@ public class Runner {
     public static void main(String[] args) {
         loadLoggingProperties();
 
-        String searchResultsUrl="https://www.moyareklama.by/search/%D0%93%D0%BE%D0%BC%D0%B5%D0%BB%D1%8C/a19665237ab19c6569ab9f7b803f39b2/";
+        String searchResultsUrl="https://www.moyareklama.by/search/%D0%93%D0%BE%D0%BC%D0%B5%D0%BB%D1%8C/c56950abe5d86434d5e08455380399be/";
         AdvertCrawler crawler = new AdvertCrawler(searchResultsUrl);
         crawler.getAdvertContainer();
     }

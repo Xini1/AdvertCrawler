@@ -2,6 +2,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.logging.Level;
@@ -11,21 +12,34 @@ import java.util.stream.Collectors;
 public class AdvertCrawler {
 
     private String searchResultsUrl;
+    private LocalDate date;
+    private ExecutorService executorService;
 
     private Logger logger = Logger.getLogger(getClass().getName());
 
     public AdvertCrawler(String searchResultsUrl) {
         this.searchResultsUrl = searchResultsUrl;
+        date = LocalDate.now();
+        executorService = Executors.newFixedThreadPool(10);
     }
 
     public AdvertContainer getAdvertContainer() {
+        AdvertContainer container = new AdvertContainer();
+        container.setCreationDate(date);
         int pagesTotal = getPagesTotal();
         System.out.println("Total number of pages acquired = " + pagesTotal);
-        List<String> advertLinks = getAdvertLinks(pagesTotal);
-        System.out.println("Advert links collected, total = " + advertLinks.size());
-        List<Advert> adverts = parseAdverts(advertLinks);
-        System.out.println("Adverts constructed, total = " + adverts.size());
-        return null;
+        try {
+            List<String> advertLinks = getAdvertLinks(pagesTotal);
+            System.out.println("Advert links collected, total = " + advertLinks.size());
+            List<Advert> adverts = parseAdverts(advertLinks);
+            System.out.println("Adverts constructed, total = " + adverts.size());
+            adverts.forEach(System.out::println);
+            executorService.shutdown();
+        } catch (InterruptedException e) {
+            logger.log(Level.SEVERE, "Interrupted while waiting", e);
+            return null;
+        }
+        return container;
     }
 
     private int getPagesTotal() {
@@ -47,8 +61,7 @@ public class AdvertCrawler {
                 .orElse(1);
     }
 
-    private List<String> getAdvertLinks(int pagesTotal) {
-        ExecutorService executorService = Executors.newFixedThreadPool(10);
+    private List<String> getAdvertLinks(int pagesTotal) throws InterruptedException {
         List<Callable<List<String>>> tasks = new ArrayList<>();
 
         for (int i = 1; i <= pagesTotal; i++) {
@@ -56,16 +69,9 @@ public class AdvertCrawler {
             tasks.add(new SearchPageScanner(pageUrl));
         }
 
-        List<Future<List<String>>> futures;
+        List<Future<List<String>>> futures = executorService.invokeAll(tasks);
 
-        try {
-            futures = executorService.invokeAll(tasks);
-        } catch (InterruptedException e) {
-            logger.log(Level.SEVERE, "Interrupted invoking execution of page scanners", e);
-            return Collections.emptyList();
-        }
-
-        List<String> advertLinks = futures.stream()
+        return futures.stream()
                 .map(listFuture -> {
                     try {
                         return listFuture.get();
@@ -79,28 +85,16 @@ public class AdvertCrawler {
                 .flatMap(List::stream)
                 .distinct()
                 .collect(Collectors.toList());
-
-        executorService.shutdown();
-
-        return advertLinks;
     }
 
-    private List<Advert> parseAdverts(List<String> advertLinks) {
-        ExecutorService executorService = Executors.newFixedThreadPool(10);
+    private List<Advert> parseAdverts(List<String> advertLinks) throws InterruptedException {
         List<Callable<Advert>> tasks = advertLinks.stream()
-                .map(AdvertBuilder::new)
+                .map(advertUrl -> new AdvertBuilder(date, advertUrl))
                 .collect(Collectors.toList());
 
-        List<Future<Advert>> futures;
+        List<Future<Advert>> futures = executorService.invokeAll(tasks);
 
-        try {
-            futures = executorService.invokeAll(tasks);
-        } catch (InterruptedException e) {
-            logger.log(Level.SEVERE, "Interrupted invoking execution of advert builders", e);
-            return Collections.emptyList();
-        }
-
-        List<Advert> adverts = futures.stream()
+        return futures.stream()
                 .map(listFuture -> {
                     try {
                         return listFuture.get();
@@ -112,9 +106,5 @@ public class AdvertCrawler {
                 })
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
-
-        executorService.shutdown();
-
-        return adverts;
     }
 }

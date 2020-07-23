@@ -1,13 +1,16 @@
+import java.util.Deque;
+import java.util.List;
+
 public class Advert {
 
     private String advertUrl;
     private String title;
     private String address;
-    private int area;
-    private float floor;
+    private float area;
+    private int floor;
     private int totalFloors;
-    private int price;
-    private String phoneNumber;
+    private Deque<PriceHistory> priceHistoryDeque;
+    private List<String> phoneNumbers;
 
     public String getAdvertUrl() {
         return advertUrl;
@@ -33,19 +36,19 @@ public class Advert {
         this.address = address;
     }
 
-    public int getArea() {
+    public float getArea() {
         return area;
     }
 
-    public void setArea(int area) {
+    public void setArea(float area) {
         this.area = area;
     }
 
-    public float getFloor() {
+    public int getFloor() {
         return floor;
     }
 
-    public void setFloor(float floor) {
+    public void setFloor(int floor) {
         this.floor = floor;
     }
 
@@ -57,19 +60,33 @@ public class Advert {
         this.totalFloors = totalFloors;
     }
 
-    public int getPrice() {
-        return price;
+    public Deque<PriceHistory> getPriceHistoryDeque() {
+        return priceHistoryDeque;
     }
 
-    public void setPrice(int price) {
-        this.price = price;
+    public void setPriceHistoryDeque(Deque<PriceHistory> priceHistoryDeque) {
+        this.priceHistoryDeque = priceHistoryDeque;
     }
 
-    public String getPhoneNumber() {
-        return phoneNumber;
+    public List<String> getPhoneNumbers() {
+        return phoneNumbers;
     }
 
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
+    public void setPhoneNumbers(List<String> phoneNumbers) {
+        this.phoneNumbers = phoneNumbers;
+    }
+
+    @Override
+    public String toString() {
+        return "Advert{" +
+                "advertUrl='" + advertUrl + '\'' +
+                ", title='" + title + '\'' +
+                ", address='" + address + '\'' +
+                ", area=" + area +
+                ", floor=" + floor +
+                ", totalFloors=" + totalFloors +
+                ", priceHistoryDeque=" + priceHistoryDeque +
+                ", phoneNumbers=" + phoneNumbers +
+                '}';
     }
 }
