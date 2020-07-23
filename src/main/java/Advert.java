@@ -1,5 +1,7 @@
+import java.time.LocalDate;
 import java.util.Deque;
 import java.util.List;
+import java.util.Objects;
 
 public class Advert {
 
@@ -11,6 +13,7 @@ public class Advert {
     private int totalFloors;
     private Deque<PriceHistory> priceHistoryDeque;
     private List<String> phoneNumbers;
+    private LocalDate lastEditDate;
 
     public String getAdvertUrl() {
         return advertUrl;
@@ -76,6 +79,33 @@ public class Advert {
         this.phoneNumbers = phoneNumbers;
     }
 
+    public LocalDate getLastEditDate() {
+        return lastEditDate;
+    }
+
+    public void setLastEditDate(LocalDate lastEditDate) {
+        this.lastEditDate = lastEditDate;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+
+        Advert advert = (Advert) obj;
+        return Objects.equals(advertUrl, advert.advertUrl);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(advertUrl);
+    }
+
     @Override
     public String toString() {
         return "Advert{" +
@@ -87,6 +117,7 @@ public class Advert {
                 ", totalFloors=" + totalFloors +
                 ", priceHistoryDeque=" + priceHistoryDeque +
                 ", phoneNumbers=" + phoneNumbers +
+                ", lastEditDate=" + lastEditDate +
                 '}';
     }
 }

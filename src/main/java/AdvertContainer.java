@@ -22,4 +22,12 @@ public class AdvertContainer {
     public void setAdverts(List<Advert> adverts) {
         this.adverts = adverts;
     }
+
+    @Override
+    public String toString() {
+        return "AdvertContainer{" +
+                "creationDate=" + creationDate +
+                ", adverts=" + adverts +
+                '}';
+    }
 }

@@ -66,7 +66,7 @@ public class AdvertBuilder implements Callable<Advert> {
                 .selectElementsWithClass("div", "square")
                 .getAsText()
                 .stream()
-                .flatMap(s -> Arrays.stream(s.split(" |:")))
+                .flatMap(s -> Arrays.stream(s.split("[ :]")))
                 .filter(string -> string.matches("\\d+(,\\d+)?"))
                 .findFirst()
                 .map(s -> s.replace(',', '.'))
@@ -159,6 +159,7 @@ public class AdvertBuilder implements Callable<Advert> {
         advert.setFloor(floor);
         advert.setTotalFloors(totalFloors);
         advert.setPhoneNumbers(phoneNumbers);
+        advert.setLastEditDate(date);
 
         Deque<PriceHistory> priceHistoryDeque = new LinkedList<>();
         priceHistoryDeque.offerFirst(priceHistory);
