@@ -1,8 +1,8 @@
-package crawling;
+package by.advertcrawler.crawling;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import utils.PageParser;
+import by.advertcrawler.utils.PageParser;
 
 import java.io.IOException;
 import java.util.Collections;

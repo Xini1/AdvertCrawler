@@ -1,4 +1,4 @@
-package model;
+package by.advertcrawler.model;
 
 import java.time.LocalDate;
 import java.util.Iterator;

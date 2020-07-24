@@ -1,10 +1,10 @@
-package crawling;
+package by.advertcrawler.crawling;
 
-import model.Advert;
-import model.PriceHistory;
+import by.advertcrawler.model.Advert;
+import by.advertcrawler.model.PriceHistory;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import utils.PageParser;
+import by.advertcrawler.utils.PageParser;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -166,6 +166,7 @@ public class AdvertBuilder implements Callable<Advert> {
         advert.setPhoneNumbers(phoneNumbers);
         advert.setLastRefreshDate(date);
         advert.setFavorite(false);
+        advert.setNew(true);
 
         Deque<PriceHistory> priceHistoryDeque = new LinkedList<>();
         priceHistoryDeque.offerFirst(priceHistory);

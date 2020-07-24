@@ -1,4 +1,4 @@
-package model;
+package by.advertcrawler.model;
 
 import java.time.LocalDate;
 import java.util.*;
@@ -16,6 +16,7 @@ public class Advert {
     private List<String> phoneNumbers;
     private LocalDate lastRefreshDate;
     private boolean isFavorite;
+    private boolean isNew;
 
     public String getAdvertUrl() {
         return advertUrl;
@@ -97,6 +98,14 @@ public class Advert {
         isFavorite = favorite;
     }
 
+    public boolean isNew() {
+        return isNew;
+    }
+
+    public void setNew(boolean aNew) {
+        isNew = aNew;
+    }
+
     public static Advert parseCsv(Iterator<String> iterator) {
         Advert advert = new Advert();
 
@@ -123,6 +132,8 @@ public class Advert {
         advert.setPhoneNumbers(phoneNumbers);
 
         advert.setLastRefreshDate(LocalDate.parse(iterator.next()));
+        advert.setFavorite(Boolean.parseBoolean(iterator.next()));
+        advert.setNew(Boolean.parseBoolean(iterator.next()));
 
         return advert;
     }
@@ -148,7 +159,9 @@ public class Advert {
         String phoneNumbersCsvString = String.join(";", phoneNumbers);
 
         builder.append(phoneNumbersCsvString).append(';')
-                .append(lastRefreshDate);
+                .append(lastRefreshDate).append(';')
+                .append(isFavorite).append(';')
+                .append(isNew);
 
         return builder.toString();
     }

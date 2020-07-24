@@ -1,10 +1,10 @@
-package crawling;
+package by.advertcrawler.crawling;
 
-import model.Advert;
-import model.AdvertContainer;
+import by.advertcrawler.model.Advert;
+import by.advertcrawler.model.AdvertContainer;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import utils.PageParser;
+import by.advertcrawler.utils.PageParser;
 
 import java.io.IOException;
 import java.time.LocalDate;

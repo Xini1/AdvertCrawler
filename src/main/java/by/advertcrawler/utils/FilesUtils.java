@@ -1,4 +1,4 @@
-package utils;
+package by.advertcrawler.utils;
 
 import java.io.*;
 import java.util.ArrayList;
