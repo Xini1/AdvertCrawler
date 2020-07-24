@@ -15,6 +15,7 @@ public class Advert {
     private Deque<PriceHistory> priceHistoryDeque;
     private List<String> phoneNumbers;
     private LocalDate lastRefreshDate;
+    private boolean isFavorite;
 
     public String getAdvertUrl() {
         return advertUrl;
@@ -86,6 +87,14 @@ public class Advert {
 
     public void setLastRefreshDate(LocalDate lastRefreshDate) {
         this.lastRefreshDate = lastRefreshDate;
+    }
+
+    public boolean isFavorite() {
+        return isFavorite;
+    }
+
+    public void setFavorite(boolean favorite) {
+        isFavorite = favorite;
     }
 
     public static Advert parseCsv(Iterator<String> iterator) {
@@ -174,7 +183,8 @@ public class Advert {
                 ", totalFloors=" + totalFloors +
                 ", priceHistoryDeque=" + priceHistoryDeque +
                 ", phoneNumbers=" + phoneNumbers +
-                ", lastEditDate=" + lastRefreshDate +
+                ", lastRefreshDate=" + lastRefreshDate +
+                ", isFavorite=" + isFavorite +
                 '}';
     }
 }
