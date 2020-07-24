@@ -1,7 +1,6 @@
 import model.Advert;
 import model.AdvertContainer;
 import model.PriceHistory;
-import utils.AdvertContainerMerger;
 import utils.FilesUtils;
 
 import java.io.FileInputStream;
@@ -85,9 +84,9 @@ public class Runner {
 
         advert3.setPhoneNumbers(Collections.singletonList("+375293333333"));
 
-        advert1.setLastEditDate(creationDate);
-        advert2.setLastEditDate(creationDate);
-        advert3.setLastEditDate(creationDate);
+        advert1.setLastRefreshDate(creationDate);
+        advert2.setLastRefreshDate(creationDate);
+        advert3.setLastRefreshDate(creationDate);
 
         AdvertContainer container = new AdvertContainer();
         List<Advert> adverts = new ArrayList<>();
@@ -154,9 +153,9 @@ public class Runner {
 
         advert4.setPhoneNumbers(Collections.singletonList("+375294444444"));
 
-        advert1.setLastEditDate(creationDate);
-        advert2.setLastEditDate(creationDate);
-        advert4.setLastEditDate(creationDate);
+        advert1.setLastRefreshDate(creationDate);
+        advert2.setLastRefreshDate(creationDate);
+        advert4.setLastRefreshDate(creationDate);
 
         AdvertContainer container = new AdvertContainer();
         List<Advert> adverts = new ArrayList<>();

@@ -14,7 +14,7 @@ public class Advert {
     private int totalFloors;
     private Deque<PriceHistory> priceHistoryDeque;
     private List<String> phoneNumbers;
-    private LocalDate lastEditDate;
+    private LocalDate lastRefreshDate;
 
     public String getAdvertUrl() {
         return advertUrl;
@@ -80,12 +80,12 @@ public class Advert {
         this.phoneNumbers = phoneNumbers;
     }
 
-    public LocalDate getLastEditDate() {
-        return lastEditDate;
+    public LocalDate getLastRefreshDate() {
+        return lastRefreshDate;
     }
 
-    public void setLastEditDate(LocalDate lastEditDate) {
-        this.lastEditDate = lastEditDate;
+    public void setLastRefreshDate(LocalDate lastRefreshDate) {
+        this.lastRefreshDate = lastRefreshDate;
     }
 
     public static Advert parseCsv(Iterator<String> iterator) {
@@ -113,7 +113,7 @@ public class Advert {
         }
         advert.setPhoneNumbers(phoneNumbers);
 
-        advert.setLastEditDate(LocalDate.parse(iterator.next()));
+        advert.setLastRefreshDate(LocalDate.parse(iterator.next()));
 
         return advert;
     }
@@ -139,7 +139,7 @@ public class Advert {
         String phoneNumbersCsvString = String.join(";", phoneNumbers);
 
         builder.append(phoneNumbersCsvString).append(';')
-                .append(lastEditDate);
+                .append(lastRefreshDate);
 
         return builder.toString();
     }
@@ -174,7 +174,7 @@ public class Advert {
                 ", totalFloors=" + totalFloors +
                 ", priceHistoryDeque=" + priceHistoryDeque +
                 ", phoneNumbers=" + phoneNumbers +
-                ", lastEditDate=" + lastEditDate +
+                ", lastEditDate=" + lastRefreshDate +
                 '}';
     }
 }

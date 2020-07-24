@@ -164,7 +164,7 @@ public class AdvertBuilder implements Callable<Advert> {
         advert.setFloor(floor);
         advert.setTotalFloors(totalFloors);
         advert.setPhoneNumbers(phoneNumbers);
-        advert.setLastEditDate(date);
+        advert.setLastRefreshDate(date);
 
         Deque<PriceHistory> priceHistoryDeque = new LinkedList<>();
         priceHistoryDeque.offerFirst(priceHistory);

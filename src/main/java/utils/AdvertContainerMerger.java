@@ -18,24 +18,20 @@ public class AdvertContainerMerger {
         List<Advert> newerAdverts = newerContainer.getAdverts();
         List<Advert> mergedAdverts = new ArrayList<>();
 
-        LocalDate monthAgo = updatingDate.minusMonths(1);
-
         for (Advert target : olderAdverts) {
             int index = newerAdverts.indexOf(target);
 
             if (index != -1) {
                 Advert newerAdvert = newerAdverts.get(index);
 
-                boolean isEdited = editAdvert(target, newerAdvert);
-
-                if (isEdited) {
-                    target.setLastEditDate(updatingDate);
-                }
+                editAdvert(target, newerAdvert);
+                target.setLastRefreshDate(updatingDate);
 
                 newerAdverts.remove(index);
             }
 
-            if (target.getLastEditDate().compareTo(monthAgo) >= 0) {
+            LocalDate monthAgo = updatingDate.minusMonths(1);
+            if (target.getLastRefreshDate().compareTo(monthAgo) >= 0) {
                 mergedAdverts.add(target);
             }
         }
@@ -51,48 +47,22 @@ public class AdvertContainerMerger {
         return mergedContainer;
     }
 
-    private boolean editAdvert(Advert target, Advert newerAdvert) {
-        boolean isEdited = false;
-
-        if (!target.getTitle().equals(newerAdvert.getTitle())) {
-            target.setTitle(newerAdvert.getTitle());
-            isEdited = true;
-        }
-
-        if (!target.getAddress().equals(newerAdvert.getAddress())) {
-            target.setAddress(newerAdvert.getAddress());
-            isEdited = true;
-        }
-
-        if (target.getArea() != newerAdvert.getArea()) {
-            target.setArea(newerAdvert.getArea());
-            isEdited = true;
-        }
-
-        if (target.getFloor() != newerAdvert.getFloor()) {
-            target.setFloor(newerAdvert.getFloor());
-            isEdited = true;
-        }
-
-        if (target.getTotalFloors() != newerAdvert.getTotalFloors()) {
-            target.setTotalFloors(newerAdvert.getTotalFloors());
-            isEdited = true;
-        }
+    private void editAdvert(Advert target, Advert newerAdvert) {
+        target.setTitle(newerAdvert.getTitle());
+        target.setAddress(newerAdvert.getAddress());
+        target.setArea(newerAdvert.getArea());
+        target.setFloor(newerAdvert.getFloor());
+        target.setTotalFloors(newerAdvert.getTotalFloors());
+        target.setPhoneNumbers(newerAdvert.getPhoneNumbers());
 
         Deque<PriceHistory> targetPriceHistoryDeque = target.getPriceHistoryDeque();
-        PriceHistory newerPriceHistory = newerAdvert.getPriceHistoryDeque().getFirst();
-        if (!targetPriceHistoryDeque.getFirst().equals(newerPriceHistory)) {
+        Deque<PriceHistory> newerPriceHistoryDeque = newerAdvert.getPriceHistoryDeque();
+        PriceHistory targetPriceHistory = targetPriceHistoryDeque.getFirst();
+        PriceHistory newerPriceHistory = newerPriceHistoryDeque.getFirst();
+        int targetPrice = targetPriceHistory.getPrice();
+        int newerPrice = newerPriceHistory.getPrice();
+        if (targetPrice != newerPrice) {
             targetPriceHistoryDeque.addFirst(newerPriceHistory);
-            isEdited = true;
         }
-
-        List<String> phoneNumbers = target.getPhoneNumbers();
-        List<String> newerAdvertPhoneNumbers = newerAdvert.getPhoneNumbers();
-        if (!phoneNumbers.equals(newerAdvertPhoneNumbers)) {
-            target.setPhoneNumbers(newerAdvertPhoneNumbers);
-            isEdited = true;
-        }
-
-        return isEdited;
     }
 }
