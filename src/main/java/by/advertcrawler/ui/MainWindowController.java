@@ -6,13 +6,21 @@ import by.advertcrawler.utils.FilesUtils;
 import javafx.application.HostServices;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.TextFieldListCell;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import javafx.util.StringConverter;
 
+import java.io.IOException;
 import java.time.format.DateTimeFormatter;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class MainWindowController {
 
@@ -83,11 +91,39 @@ public class MainWindowController {
 
         configAdvertsListView();
 
-        configOpenLinkButton();
+        configButtons();
+
+        configFavoriteCheckBox();
     }
 
-    private void configOpenLinkButton() {
+    private void configFavoriteCheckBox() {
+        isFavoriteCheckBox.setOnAction(actionEvent ->
+                advertsListView.getSelectionModel().getSelectedItem().setFavorite(isFavoriteCheckBox.isSelected()));
+    }
+
+    private void configButtons() {
         openLinkButton.setOnAction(actionEvent -> openAdvertUrlInBrowser());
+        checkoutPriceHistoryButton.setOnAction(actionEvent -> checkoutPriceHistory());
+    }
+
+    private void checkoutPriceHistory() {
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("/AdvertCrawlerPriceHistoryWindow.fxml"));
+
+            Scene scene = new Scene(root);
+
+            Stage stage = new Stage();
+            stage.setScene(scene);
+            stage.setTitle("История изменений цены");
+            stage.initOwner(checkoutPriceHistoryButton.getScene().getWindow());
+            stage.initModality(Modality.WINDOW_MODAL);
+
+            stage.showAndWait();
+        } catch (IOException e) {
+            Logger.getLogger(getClass().getName())
+                    .log(Level.SEVERE, "Could not load price history window", e);
+        }
+
     }
 
     private void openAdvertUrlInBrowser() {
