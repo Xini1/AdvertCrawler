@@ -9,14 +9,17 @@
 <?import javafx.scene.text.Text?>
 <?import javafx.scene.text.TextFlow?>
 
-<BorderPane xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="by.advertcrawler.ui.NewAdvertPhoneNumbersWindowController">
    <bottom>
       <HBox BorderPane.alignment="CENTER">
          <children>
-            <Button mnemonicParsing="false" text="Копировать" />
+            <Button fx:id="copyToClipboardButton" mnemonicParsing="false" text="Копировать" />
             <Region HBox.hgrow="ALWAYS" />
-            <Button mnemonicParsing="false" text="Закрыть" />
+            <Button fx:id="closeWindowButton" mnemonicParsing="false" text="Закрыть" />
          </children>
+         <BorderPane.margin>
+            <Insets top="5.0" />
+         </BorderPane.margin>
       </HBox>
    </bottom>
    <padding>
@@ -27,7 +30,7 @@
          <content>
             <TextFlow prefWidth="400.0">
                <children>
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Text" />
+                  <Text fx:id="phoneNumbersText" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" />
                </children>
             </TextFlow>
          </content>

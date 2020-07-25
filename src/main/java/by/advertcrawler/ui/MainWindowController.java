@@ -19,6 +19,7 @@ import javafx.util.StringConverter;
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -211,6 +212,13 @@ public class MainWindowController {
 
             Parent root = loader.load();
             NewAdvertPhoneNumbersWindowController controller = loader.getController();
+
+            String phoneNumbers = container.getNewAdverts().stream()
+                    .map(advert -> advert.getPhoneNumbers().get(0))
+                    .filter(Objects::nonNull)
+                    .distinct()
+                    .collect(Collectors.joining(";"));
+            controller.setText(phoneNumbers);
 
             Scene scene = new Scene(root);
 
