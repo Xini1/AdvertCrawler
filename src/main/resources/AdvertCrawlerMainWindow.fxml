@@ -24,7 +24,7 @@
          <children>
             <Button fx:id="openWindowRefreshAdvertContainerButton" mnemonicParsing="false" text="Обновить базу" />
             <Region HBox.hgrow="SOMETIMES" />
-            <Button fx:id="openWindowGetNewAdvertPhoneNumbers" mnemonicParsing="false" text="Список телефонов новых объявлений" />
+            <Button fx:id="openWindowNewAdvertPhoneNumbersButton" mnemonicParsing="false" text="Список телефонов новых объявлений" />
          </children>
          <padding>
             <Insets bottom="5.0" top="5.0" />
@@ -105,13 +105,13 @@
                         <HBox alignment="CENTER" spacing="5.0" GridPane.columnIndex="1" GridPane.rowIndex="6">
                            <children>
                               <Text fx:id="priceText" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" />
-                              <Button fx:id="checkoutPriceHistoryButton" mnemonicParsing="false" text="Посмотреть историю изменений" />
+                              <Button fx:id="openWindowCheckoutPriceHistoryButton" mnemonicParsing="false" text="Посмотреть историю изменений" />
                            </children>
                         </HBox>
                         <HBox alignment="CENTER" spacing="5.0" GridPane.columnIndex="1">
                            <children>
                               <Text fx:id="linkText" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" />
-                              <Button fx:id="openLinkButton" mnemonicParsing="false" text="Открыть" />
+                              <Button fx:id="openAdvertUrlInBrowserButton" mnemonicParsing="false" text="Открыть" />
                            </children>
                         </HBox>
                         <Text fx:id="titleText" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" GridPane.columnIndex="1" GridPane.rowIndex="1" />

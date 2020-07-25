@@ -3,9 +3,8 @@ package by.advertcrawler;
 import by.advertcrawler.model.Advert;
 import by.advertcrawler.model.AdvertContainer;
 import by.advertcrawler.model.PriceHistory;
-import by.advertcrawler.ui.MainWindowController;
-import by.advertcrawler.ui.UiStarter;
-import by.advertcrawler.utils.FilesUtils;
+import by.advertcrawler.ui.GuiStarter;
+import by.advertcrawler.utils.FileUtils;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -21,11 +20,11 @@ public class Runner {
         loadLoggingProperties();
 
         AdvertContainer container = getContainer();
-        FilesUtils filesUtils = new FilesUtils();
-        filesUtils.writeToFile(container.toCsv(), MainWindowController.SAVE_PATH);
+        FileUtils fileUtils = new FileUtils();
+        fileUtils.writeToFile(container.toCsv(), GuiStarter.ADVERT_CONTAINER_SAVE_PATH);
 
         try {
-            UiStarter.run(args);
+            GuiStarter.run(args);
         } catch (Exception e) {
             Logger.getLogger(Runner.class.getName())
                     .log(Level.SEVERE, "Unexpected exception occurred", e);
@@ -52,7 +51,7 @@ public class Runner {
 
         for (int i = 0; i < 100; i++) {
             Advert advert = new Advert();
-            advert.setAdvertUrl("https://o7planning.org/ru/11133/javafx-hyperlink-tutorial");
+            advert.setAdvertUrl("https://o7planning.org/ru/" + i);
             advert.setTitle("title" + i);
             advert.setAddress("address" + i);
             advert.setArea(10f + 10 * i);

@@ -1,5 +1,7 @@
 package by.advertcrawler.ui;
 
+import by.advertcrawler.model.AdvertContainer;
+import by.advertcrawler.utils.FileUtils;
 import javafx.application.Application;
 import javafx.application.HostServices;
 import javafx.fxml.FXMLLoader;
@@ -7,7 +9,9 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-public class UiStarter extends Application {
+public class GuiStarter extends Application {
+
+    public static final String ADVERT_CONTAINER_SAVE_PATH = AdvertContainer.class.getName() + ".save";
 
     public static void run(String[] args) {
         launch(args);
@@ -20,11 +24,16 @@ public class UiStarter extends Application {
         Parent root = loader.load();
         MainWindowController controller = loader.getController();
 
+        FileUtils fileUtils = new FileUtils();
+        AdvertContainer container = AdvertContainer.parseCsv(fileUtils.readFromFile(ADVERT_CONTAINER_SAVE_PATH));
+        controller.setContainer(container);
+        stage.setOnShowing(windowEvent -> controller.changeView());
+        stage.setOnHiding(windowEvent -> fileUtils.writeToFile(container.toCsv(), ADVERT_CONTAINER_SAVE_PATH));
+
         Scene scene = new Scene(root);
 
         stage.setScene(scene);
         stage.setTitle("Объявления о продаже квартир на сайте www.moyareklama.by");
-        stage.setOnHiding(windowEvent -> controller.saveAdvertContainer());
 
         stage.getProperties().put(HostServices.class, getHostServices());
         stage.show();
