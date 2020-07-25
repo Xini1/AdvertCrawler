@@ -1,6 +1,7 @@
 package by.advertcrawler.ui;
 
 import javafx.application.Application;
+import javafx.application.HostServices;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -21,7 +22,8 @@ public class UiStarter extends Application {
         stage.setScene(scene);
         stage.setTitle("Объявления о продаже квартир на сайте www.moyareklama.by");
 
-        stage.show();
+        stage.getProperties().put(HostServices.class, getHostServices());
 
+        stage.show();
     }
 }

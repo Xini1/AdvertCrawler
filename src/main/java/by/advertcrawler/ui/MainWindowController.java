@@ -3,10 +3,12 @@ package by.advertcrawler.ui;
 import by.advertcrawler.model.Advert;
 import by.advertcrawler.model.AdvertContainer;
 import by.advertcrawler.utils.FilesUtils;
+import javafx.application.HostServices;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.TextFieldListCell;
+import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
 import javafx.util.StringConverter;
 
@@ -24,14 +26,49 @@ public class MainWindowController {
     private ListView<Advert> advertsListView;
 
     @FXML
-    private Text linkText, titleText, addressText, areaText, floorText, totalFloorText, priceText, phoneNumbersText,
-            lastRefreshDateText;
+    private Text linkText;
+
+    @FXML
+    private Text titleText;
+
+    @FXML
+    private Text addressText;
+
+    @FXML
+    private Text areaText;
+
+    @FXML
+    private Text floorText;
+
+    @FXML
+    private Text totalFloorText;
+
+    @FXML
+    private Text priceText;
+
+    @FXML
+    private Text phoneNumbersText;
+
+    @FXML
+    private Text lastRefreshDateText;
 
     @FXML
     private CheckBox isFavoriteCheckBox;
 
     @FXML
-    private Button refreshAdvertContainer, getNewAdvertPhoneNumbers, openLinkButton, checkoutPriceHistoryButton;
+    private Button refreshAdvertContainer;
+
+    @FXML
+    private Button getNewAdvertPhoneNumbers;
+
+    @FXML
+    private Button openLinkButton;
+
+    @FXML
+    private Button checkoutPriceHistoryButton;
+
+    @FXML
+    private GridPane advertGridPane;
 
     private AdvertContainer container;
 
@@ -45,6 +82,19 @@ public class MainWindowController {
         changeView();
 
         configAdvertsListView();
+
+        configOpenLinkButton();
+    }
+
+    private void configOpenLinkButton() {
+        openLinkButton.setOnAction(actionEvent -> openAdvertUrlInBrowser());
+    }
+
+    private void openAdvertUrlInBrowser() {
+        Class<HostServices> hostServicesClass = HostServices.class;
+        HostServices hostServices = hostServicesClass.cast(openLinkButton.getScene().getWindow().getProperties()
+                .get(hostServicesClass));
+        hostServices.showDocument(linkText.getText());
     }
 
     private void configAdvertsListView() {
@@ -66,7 +116,7 @@ public class MainWindowController {
             return cell;
         });
 
-        advertsListView.setOnMouseClicked(event -> viewAdvert());
+        advertsListView.setOnMouseClicked(mouseEvent -> viewAdvert());
     }
 
     private void viewAdvert() {
@@ -87,6 +137,8 @@ public class MainWindowController {
         lastRefreshDateText.setText(formatter.format(selected.getLastRefreshDate()));
 
         isFavoriteCheckBox.setSelected(selected.isFavorite());
+
+        advertGridPane.setVisible(true);
     }
 
     private void loadAdvertContainer() {
@@ -106,16 +158,10 @@ public class MainWindowController {
 
             @Override
             public AdvertViewMode fromString(String s) {
-                for (AdvertViewMode viewMode : AdvertViewMode.values()) {
-                    if (viewMode.getTitle().equals(s)) {
-                        return viewMode;
-                    }
-                }
-
                 return null;
             }
         });
-        advertViewComboBox.setOnAction(event -> changeView());
+        advertViewComboBox.setOnAction(actionEvent -> changeView());
     }
 
     private void changeView() {

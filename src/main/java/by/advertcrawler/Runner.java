@@ -49,7 +49,7 @@ public class Runner {
         container.setCreationDate(date);
 
         Advert advert1 = new Advert();
-        advert1.setAdvertUrl("url1");
+        advert1.setAdvertUrl("https://o7planning.org/ru/11133/javafx-hyperlink-tutorial");
         advert1.setTitle("title1");
         advert1.setAddress("address1");
         advert1.setArea(10);
@@ -71,7 +71,7 @@ public class Runner {
         advert1.setLastRefreshDate(date);
 
         Advert advert2 = new Advert();
-        advert2.setAdvertUrl("url2");
+        advert2.setAdvertUrl("https://stackoverflow.com/questions/33094981/javafx-8-open-a-link-in-a-browser-without-reference-to-application");
         advert2.setTitle("title2");
         advert2.setAddress("address2");
         advert2.setArea(20);
@@ -93,6 +93,10 @@ public class Runner {
         advert2.setLastRefreshDate(date);
 
         List<Advert> adverts = new ArrayList<>();
+        for (int i = 0; i < 100; i++) {
+            adverts.add(advert1);
+            adverts.add(advert2);
+        }
         adverts.add(advert1);
         adverts.add(advert2);
 

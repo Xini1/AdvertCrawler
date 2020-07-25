@@ -39,13 +39,10 @@
          <children>
             <TextField fx:id="searchTextField" promptText="Поиск" />
             <ComboBox fx:id="advertViewComboBox" />
-            <ScrollPane VBox.vgrow="ALWAYS">
-              <content>
-                <AnchorPane>
-                     <children>
-                        <ListView fx:id="advertsListView" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                     </children></AnchorPane>
-              </content>
+            <ScrollPane fitToHeight="true" VBox.vgrow="ALWAYS">
+               <content>
+                  <ListView fx:id="advertsListView" />
+               </content>
             </ScrollPane>
          </children>
       </VBox>
@@ -55,7 +52,7 @@
         <content>
           <AnchorPane>
                <children>
-                  <GridPane hgap="10.0" vgap="5.0">
+                  <GridPane fx:id="advertGridPane" hgap="10.0" vgap="5.0" visible="false">
                      <columnConstraints>
                         <ColumnConstraints halignment="RIGHT" />
                         <ColumnConstraints fillWidth="false" />
@@ -73,14 +70,38 @@
                         <RowConstraints valignment="CENTER" />
                      </rowConstraints>
                      <children>
-                        <Label text="Ссылка" />
-                        <Label text="Заголовок" GridPane.rowIndex="1" />
-                        <Label text="Адрес" GridPane.rowIndex="2" />
-                        <Label text="Площадь" GridPane.rowIndex="3" />
-                        <Label text="Этаж" GridPane.rowIndex="4" />
-                        <Label text="Всего этажей" GridPane.rowIndex="5" />
-                        <Label text="Цена" GridPane.rowIndex="6" />
-                        <Label text="Телефоны" GridPane.rowIndex="7" />
+                        <Label text="Ссылка">
+                           <GridPane.margin>
+                              <Insets left="5.0" />
+                           </GridPane.margin></Label>
+                        <Label text="Заголовок" GridPane.rowIndex="1">
+                           <GridPane.margin>
+                              <Insets left="5.0" />
+                           </GridPane.margin></Label>
+                        <Label text="Адрес" GridPane.rowIndex="2">
+                           <GridPane.margin>
+                              <Insets left="5.0" />
+                           </GridPane.margin></Label>
+                        <Label text="Площадь" GridPane.rowIndex="3">
+                           <GridPane.margin>
+                              <Insets left="5.0" />
+                           </GridPane.margin></Label>
+                        <Label text="Этаж" GridPane.rowIndex="4">
+                           <GridPane.margin>
+                              <Insets left="5.0" />
+                           </GridPane.margin></Label>
+                        <Label text="Всего этажей" GridPane.rowIndex="5">
+                           <GridPane.margin>
+                              <Insets left="5.0" />
+                           </GridPane.margin></Label>
+                        <Label text="Цена" GridPane.rowIndex="6">
+                           <GridPane.margin>
+                              <Insets left="5.0" />
+                           </GridPane.margin></Label>
+                        <Label text="Телефоны" GridPane.rowIndex="7">
+                           <GridPane.margin>
+                              <Insets left="5.0" />
+                           </GridPane.margin></Label>
                         <HBox alignment="CENTER" spacing="5.0" GridPane.columnIndex="1" GridPane.rowIndex="6">
                            <children>
                               <Text fx:id="priceText" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" />
@@ -99,9 +120,15 @@
                         <Text fx:id="floorText" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                         <Text fx:id="totalFloorText" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" GridPane.columnIndex="1" GridPane.rowIndex="5" />
                         <Text fx:id="phoneNumbersText" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" GridPane.columnIndex="1" GridPane.rowIndex="7" />
-                        <Label text="Дата последнего обновления" GridPane.rowIndex="8" />
+                        <Label text="Дата последнего обновления" GridPane.rowIndex="8">
+                           <GridPane.margin>
+                              <Insets left="5.0" />
+                           </GridPane.margin></Label>
                         <Text fx:id="lastRefreshDateText" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" GridPane.columnIndex="1" GridPane.rowIndex="8" />
-                        <Label text="Избранное" GridPane.rowIndex="9" />
+                        <Label text="Избранное" GridPane.rowIndex="9">
+                           <GridPane.margin>
+                              <Insets left="5.0" />
+                           </GridPane.margin></Label>
                         <CheckBox fx:id="isFavoriteCheckBox" mnemonicParsing="false" GridPane.columnIndex="1" GridPane.rowIndex="9" />
                      </children>
                      <padding>
