@@ -22,9 +22,9 @@
    <bottom>
       <HBox BorderPane.alignment="CENTER">
          <children>
-            <Button fx:id="refreshAdvertContainer" mnemonicParsing="false" text="Обновить базу" />
+            <Button fx:id="openWindowRefreshAdvertContainerButton" mnemonicParsing="false" text="Обновить базу" />
             <Region HBox.hgrow="SOMETIMES" />
-            <Button fx:id="getNewAdvertPhoneNumbers" mnemonicParsing="false" text="Список телефонов новых объявлений" />
+            <Button fx:id="openWindowGetNewAdvertPhoneNumbers" mnemonicParsing="false" text="Список телефонов новых объявлений" />
          </children>
          <padding>
             <Insets bottom="5.0" top="5.0" />

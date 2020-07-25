@@ -32,17 +32,14 @@ public class AdvertCrawler {
         AdvertContainer container = new AdvertContainer();
         container.setCreationDate(date);
         int pagesTotal = getPagesTotal();
-        System.out.println("Total number of pages acquired = " + pagesTotal);
         try {
             List<String> advertLinks = getAdvertLinks(pagesTotal);
-            System.out.println("Model.Advert links collected, total = " + advertLinks.size());
             List<Advert> adverts = parseAdverts(advertLinks);
-            System.out.println("Adverts constructed, total = " + adverts.size());
-            adverts.forEach(System.out::println);
+            container.setAdverts(adverts);
             executorService.shutdown();
         } catch (InterruptedException e) {
-            logger.log(Level.SEVERE, "Interrupted while waiting", e);
-            return null;
+            logger.log(Level.WARNING, "Interrupted while waiting", e);
+            Thread.currentThread().interrupt();
         }
         return container;
     }
@@ -80,11 +77,14 @@ public class AdvertCrawler {
                 .map(listFuture -> {
                     try {
                         return listFuture.get();
-                    } catch (InterruptedException | ExecutionException e) {
-                        logger.log(Level.SEVERE, "Interrupted getting links", e);
-                        return null;
+                    } catch (InterruptedException e) {
+                        logger.log(Level.WARNING, "Interrupted getting links", e);
+                        Thread.currentThread().interrupt();
+                    } catch (ExecutionException e) {
+                        logger.log(Level.WARNING, "Retrieval of page scanning result was aborted", e);
                     }
 
+                    return null;
                 })
                 .filter(Objects::nonNull)
                 .flatMap(List::stream)
@@ -103,11 +103,14 @@ public class AdvertCrawler {
                 .map(listFuture -> {
                     try {
                         return listFuture.get();
-                    } catch (InterruptedException | ExecutionException e) {
-                        logger.log(Level.SEVERE, "Interrupted getting adverts", e);
-                        return null;
+                    } catch (InterruptedException e) {
+                        logger.log(Level.WARNING, "Interrupted getting adverts", e);
+                        Thread.currentThread().interrupt();
+                    } catch (ExecutionException e) {
+                        logger.log(Level.WARNING, "Retrieval of advert building result was aborted", e);
                     }
 
+                    return null;
                 })
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());

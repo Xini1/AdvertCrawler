@@ -19,8 +19,10 @@ import javafx.util.StringConverter;
 
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 public class MainWindowController {
 
@@ -64,10 +66,10 @@ public class MainWindowController {
     private CheckBox isFavoriteCheckBox;
 
     @FXML
-    private Button refreshAdvertContainer;
+    private Button openWindowRefreshAdvertContainerButton;
 
     @FXML
-    private Button getNewAdvertPhoneNumbers;
+    private Button openWindowGetNewAdvertPhoneNumbers;
 
     @FXML
     private Button openLinkButton;
@@ -78,13 +80,16 @@ public class MainWindowController {
     @FXML
     private GridPane advertGridPane;
 
+    private FilesUtils filesUtils;
     private AdvertContainer container;
 
-    public static final String SAVE_PATH = "container.save";
+    public static final String SAVE_PATH = AdvertContainer.class.getName() + ".save";
 
     @FXML
     public void initialize() {
         loadAdvertContainer();
+
+        configSearchTextField();
 
         configViewComboBox();
         changeView();
@@ -96,41 +101,31 @@ public class MainWindowController {
         configFavoriteCheckBox();
     }
 
-    private void configFavoriteCheckBox() {
-        isFavoriteCheckBox.setOnAction(actionEvent ->
-                advertsListView.getSelectionModel().getSelectedItem().setFavorite(isFavoriteCheckBox.isSelected()));
+    private void loadAdvertContainer() {
+        filesUtils = new FilesUtils();
+        String csv = filesUtils.readFromFile(SAVE_PATH);
+        container = AdvertContainer.parseCsv(csv);
     }
 
-    private void configButtons() {
-        openLinkButton.setOnAction(actionEvent -> openAdvertUrlInBrowser());
-        checkoutPriceHistoryButton.setOnAction(actionEvent -> checkoutPriceHistory());
+    private void configSearchTextField() {
+        searchTextField.textProperty().addListener(((observableValue, oldInput, newInput) -> changeView()));
     }
 
-    private void checkoutPriceHistory() {
-        try {
-            Parent root = FXMLLoader.load(getClass().getResource("/AdvertCrawlerPriceHistoryWindow.fxml"));
+    private void configViewComboBox() {
+        advertViewComboBox.getItems().addAll(AdvertViewMode.values());
+        advertViewComboBox.setValue(AdvertViewMode.values()[0]);
+        advertViewComboBox.setConverter(new StringConverter<>() {
+            @Override
+            public String toString(AdvertViewMode advertViewMode) {
+                return advertViewMode.getTitle();
+            }
 
-            Scene scene = new Scene(root);
-
-            Stage stage = new Stage();
-            stage.setScene(scene);
-            stage.setTitle("История изменений цены");
-            stage.initOwner(checkoutPriceHistoryButton.getScene().getWindow());
-            stage.initModality(Modality.WINDOW_MODAL);
-
-            stage.showAndWait();
-        } catch (IOException e) {
-            Logger.getLogger(getClass().getName())
-                    .log(Level.SEVERE, "Could not load price history window", e);
-        }
-
-    }
-
-    private void openAdvertUrlInBrowser() {
-        Class<HostServices> hostServicesClass = HostServices.class;
-        HostServices hostServices = hostServicesClass.cast(openLinkButton.getScene().getWindow().getProperties()
-                .get(hostServicesClass));
-        hostServices.showDocument(linkText.getText());
+            @Override
+            public AdvertViewMode fromString(String s) {
+                return null;
+            }
+        });
+        advertViewComboBox.setOnAction(actionEvent -> changeView());
     }
 
     private void configAdvertsListView() {
@@ -155,6 +150,64 @@ public class MainWindowController {
         advertsListView.setOnMouseClicked(mouseEvent -> viewAdvert());
     }
 
+    private void configButtons() {
+        openLinkButton.setOnAction(actionEvent -> openAdvertUrlInBrowser());
+        checkoutPriceHistoryButton.setOnAction(actionEvent -> openWindowCheckoutPriceHistory());
+        openWindowRefreshAdvertContainerButton.setOnAction(actionEvent -> openWindowRefreshAdvertContainer());
+    }
+
+    private void configFavoriteCheckBox() {
+        isFavoriteCheckBox.setOnAction(actionEvent -> {
+            advertsListView.getSelectionModel().getSelectedItem().setFavorite(isFavoriteCheckBox.isSelected());
+            changeView();
+        });
+    }
+
+    private void openWindowRefreshAdvertContainer() {
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("/AdvertCrawlerRefreshWindow.fxml"));
+
+            Scene scene = new Scene(root);
+
+            Stage stage = new Stage();
+            stage.setScene(scene);
+            stage.setTitle("Обновление базы объявлений");
+            stage.initOwner(openWindowRefreshAdvertContainerButton.getScene().getWindow());
+            stage.initModality(Modality.WINDOW_MODAL);
+
+            stage.showAndWait();
+        } catch (IOException e) {
+            Logger.getLogger(getClass().getName())
+                    .log(Level.SEVERE, "Could not load refresh advert container window", e);
+        }
+    }
+
+    private void openWindowCheckoutPriceHistory() {
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("/AdvertCrawlerPriceHistoryWindow.fxml"));
+
+            Scene scene = new Scene(root);
+
+            Stage stage = new Stage();
+            stage.setScene(scene);
+            stage.setTitle("История изменений цены");
+            stage.initOwner(checkoutPriceHistoryButton.getScene().getWindow());
+            stage.initModality(Modality.WINDOW_MODAL);
+
+            stage.showAndWait();
+        } catch (IOException e) {
+            Logger.getLogger(getClass().getName())
+                    .log(Level.SEVERE, "Could not load price history window", e);
+        }
+    }
+
+    private void openAdvertUrlInBrowser() {
+        Class<HostServices> hostServicesClass = HostServices.class;
+        HostServices hostServices = hostServicesClass.cast(openLinkButton.getScene().getWindow().getProperties()
+                .get(hostServicesClass));
+        hostServices.showDocument(linkText.getText());
+    }
+
     private void viewAdvert() {
         Advert selected = advertsListView.getSelectionModel().getSelectedItem();
 
@@ -177,44 +230,50 @@ public class MainWindowController {
         advertGridPane.setVisible(true);
     }
 
-    private void loadAdvertContainer() {
-        FilesUtils filesUtils = new FilesUtils();
-        String csv = filesUtils.readFromFile(SAVE_PATH);
-        container = AdvertContainer.parseCsv(csv);
-    }
-
-    private void configViewComboBox() {
-        advertViewComboBox.getItems().addAll(AdvertViewMode.values());
-        advertViewComboBox.setValue(AdvertViewMode.values()[0]);
-        advertViewComboBox.setConverter(new StringConverter<>() {
-            @Override
-            public String toString(AdvertViewMode advertViewMode) {
-                return advertViewMode.getTitle();
-            }
-
-            @Override
-            public AdvertViewMode fromString(String s) {
-                return null;
-            }
-        });
-        advertViewComboBox.setOnAction(actionEvent -> changeView());
-    }
-
     private void changeView() {
+        List<Advert> advertsToShow = getAdvertsBasedOnViewMode();
+        List<Advert> filteredAdverts = filterAdverts(advertsToShow);
+        fillInAdvertsListView(filteredAdverts);
+    }
+
+    private List<Advert> getAdvertsBasedOnViewMode() {
         AdvertViewMode viewMode = advertViewComboBox.getSelectionModel().getSelectedItem();
-        ObservableList<Advert> adverts = advertsListView.getItems();
-        adverts.clear();
+        List<Advert> advertsToShow;
 
         switch (viewMode) {
             case ALL:
-                adverts.addAll(container.getAdverts());
+                advertsToShow = container.getAdverts();
                 break;
             case NEW:
-                adverts.addAll(container.getNewAdverts());
+                advertsToShow = container.getNewAdverts();
                 break;
             case FAVORITE:
-                adverts.addAll(container.getFavoriteAdverts());
+                advertsToShow = container.getFavoriteAdverts();
                 break;
+            default:
+                advertsToShow = container.getAdverts();
         }
+
+        return advertsToShow;
+    }
+
+    private List<Advert> filterAdverts(List<Advert> advertsToShow) {
+        if (searchTextField.getText().isEmpty()) {
+            return advertsToShow;
+        }
+
+        return advertsToShow.stream()
+                .filter(advert -> advert.contains(searchTextField.getText()))
+                .collect(Collectors.toList());
+    }
+
+    private void fillInAdvertsListView(List<Advert> advertsToShow) {
+        ObservableList<Advert> adverts = advertsListView.getItems();
+        adverts.clear();
+        adverts.addAll(advertsToShow);
+    }
+
+    public void saveAdvertContainer() {
+        filesUtils.writeToFile(container.toCsv(), SAVE_PATH);
     }
 }

@@ -35,7 +35,7 @@ public class AdvertBuilder implements Callable<Advert> {
     }
 
     @Override
-    public Advert call() throws Exception {
+    public Advert call() {
         parsePage();
         return getAdvert();
     }
@@ -100,22 +100,22 @@ public class AdvertBuilder implements Callable<Advert> {
     }
 
     private PriceHistory getPrice(Document document) {
-        PriceHistory priceHistory = new PriceHistory();
-        priceHistory.setDate(date);
+        PriceHistory constructedPriceHistory = new PriceHistory();
+        constructedPriceHistory.setDate(date);
 
         String priceOnPage = new PageParser(document)
                 .selectElementsWithClass("div", "price")
                 .getAsTextFirst();
 
         if (!priceOnPage.endsWith("р.")) {
-            return priceHistory;
+            return constructedPriceHistory;
         }
 
         String priceString = String.join("", findNumbersInString(priceOnPage));
 
-        priceHistory.setPrice(Integer.parseInt(priceString));
+        constructedPriceHistory.setPrice(Integer.parseInt(priceString));
 
-        return priceHistory;
+        return constructedPriceHistory;
     }
 
     private List<String> parsePhoneNumber(Document document) {

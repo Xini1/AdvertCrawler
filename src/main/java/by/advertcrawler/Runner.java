@@ -44,63 +44,37 @@ public class Runner {
 
     private static AdvertContainer getContainer() {
         LocalDate date = LocalDate.now();
+        List<Advert> adverts = new ArrayList<>();
 
         AdvertContainer container = new AdvertContainer();
         container.setCreationDate(date);
-
-        Advert advert1 = new Advert();
-        advert1.setAdvertUrl("https://o7planning.org/ru/11133/javafx-hyperlink-tutorial");
-        advert1.setTitle("title1");
-        advert1.setAddress("address1");
-        advert1.setArea(10);
-        advert1.setFloor(1);
-        advert1.setTotalFloors(5);
-
-        Deque<PriceHistory> priceHistoryDeque1 = new LinkedList<>();
-        PriceHistory priceHistory1 = new PriceHistory();
-        priceHistory1.setDate(date);
-        priceHistory1.setPrice(100);
-        priceHistoryDeque1.addFirst(priceHistory1);
-        advert1.setPriceHistoryDeque(priceHistoryDeque1);
-
-        List<String> phoneNumbers1 = new ArrayList<>(Collections.singletonList("+375291111111"));
-        advert1.setPhoneNumbers(phoneNumbers1);
-
-        advert1.setNew(true);
-        advert1.setFavorite(true);
-        advert1.setLastRefreshDate(date);
-
-        Advert advert2 = new Advert();
-        advert2.setAdvertUrl("https://stackoverflow.com/questions/33094981/javafx-8-open-a-link-in-a-browser-without-reference-to-application");
-        advert2.setTitle("title2");
-        advert2.setAddress("address2");
-        advert2.setArea(20);
-        advert2.setFloor(2);
-        advert2.setTotalFloors(5);
-
-        Deque<PriceHistory> priceHistoryDeque2 = new LinkedList<>();
-        PriceHistory priceHistory2 = new PriceHistory();
-        priceHistory2.setDate(date);
-        priceHistory2.setPrice(200);
-        priceHistoryDeque2.addFirst(priceHistory2);
-        advert2.setPriceHistoryDeque(priceHistoryDeque2);
-
-        List<String> phoneNumbers2 = new ArrayList<>(Arrays.asList("+375291111111", "+375292222222"));
-        advert2.setPhoneNumbers(phoneNumbers2);
-
-        advert2.setNew(true);
-        advert2.setFavorite(false);
-        advert2.setLastRefreshDate(date);
-
-        List<Advert> adverts = new ArrayList<>();
-        for (int i = 0; i < 100; i++) {
-            adverts.add(advert1);
-            adverts.add(advert2);
-        }
-        adverts.add(advert1);
-        adverts.add(advert2);
-
         container.setAdverts(adverts);
+
+        for (int i = 0; i < 100; i++) {
+            Advert advert = new Advert();
+            advert.setAdvertUrl("https://o7planning.org/ru/11133/javafx-hyperlink-tutorial");
+            advert.setTitle("title" + i);
+            advert.setAddress("address" + i);
+            advert.setArea(10f + 10 * i);
+            advert.setFloor(1 + i);
+            advert.setTotalFloors(3 + i);
+
+            Deque<PriceHistory> priceHistoryDeque1 = new LinkedList<>();
+            PriceHistory priceHistory1 = new PriceHistory();
+            priceHistory1.setDate(date);
+            priceHistory1.setPrice(100 + 100 * i);
+            priceHistoryDeque1.addFirst(priceHistory1);
+            advert.setPriceHistoryDeque(priceHistoryDeque1);
+
+            List<String> phoneNumbers1 = new ArrayList<>(Collections.singletonList("+3752911111" + String.format("%02d", i)));
+            advert.setPhoneNumbers(phoneNumbers1);
+
+            advert.setNew(i % 2 == 0);
+            advert.setFavorite(false);
+            advert.setLastRefreshDate(date);
+
+            adverts.add(advert);
+        }
 
         return container;
     }

@@ -106,6 +106,15 @@ public class Advert {
         isNew = aNew;
     }
 
+    public boolean contains(String value) {
+        String valueToLowerCase = value.toLowerCase();
+
+        boolean isNumberPresent = phoneNumbers.stream()
+                .anyMatch(phoneNumber -> phoneNumber.contains(valueToLowerCase));
+
+        return isNumberPresent || address.toLowerCase().contains(valueToLowerCase);
+    }
+
     public static Advert parseCsv(Iterator<String> iterator) {
         Advert advert = new Advert();
 

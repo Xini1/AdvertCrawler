@@ -15,15 +15,18 @@ public class UiStarter extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("/AdvertCrawlerMainWindow.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/AdvertCrawlerMainWindow.fxml"));
+
+        Parent root = loader.load();
+        MainWindowController controller = loader.getController();
 
         Scene scene = new Scene(root);
 
         stage.setScene(scene);
         stage.setTitle("Объявления о продаже квартир на сайте www.moyareklama.by");
+        stage.setOnHiding(windowEvent -> controller.saveAdvertContainer());
 
         stage.getProperties().put(HostServices.class, getHostServices());
-
         stage.show();
     }
 }
