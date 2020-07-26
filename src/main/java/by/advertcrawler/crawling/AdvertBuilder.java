@@ -39,22 +39,31 @@ public class AdvertBuilder implements Callable<Advert> {
 
     @Override
     public Advert call() {
-        parsePage();
-        Advert advert = getAdvert();
         task.updateProgressProperty();
-        return advert;
-    }
 
-    private void parsePage() {
         Document document;
         try {
             document = Jsoup.connect(advertUrl).get();
         } catch (IOException e) {
             Logger.getLogger(getClass().getName())
                     .log(Level.WARNING, e, () -> "Could not connect to advert page " + advertUrl);
-            return;
+            return null;
         }
 
+        String owner = new PageParser(document)
+                .selectElementsWithClass("div", "spec_address")
+                .getAsTextFirst()
+                .trim();
+
+        if (!owner.equals("Собственник")) {
+            return null;
+        }
+
+        parsePage(document);
+        return getAdvert();
+    }
+
+    private void parsePage(Document document) {
         title = new PageParser(document)
                 .selectElementsWithClass("div", "title")
                 .selectElements("span")
