@@ -44,9 +44,17 @@ public class AdvertContainer {
     public static AdvertContainer parseCsv(String csvString) {
         AdvertContainer container = new AdvertContainer();
 
+        if (csvString.isEmpty()) {
+            container.setCreationDate(LocalDate.now());
+            container.setAdverts(new ArrayList<>());
+            return container;
+        }
+
         List<String> list = Arrays.stream(csvString.split("\n"))
                 .flatMap(s -> Arrays.stream(s.split(";")))
+                .filter(s -> !s.isEmpty())
                 .collect(Collectors.toList());
+
         Iterator<String> iterator = list.iterator();
 
         LocalDate creationDate = LocalDate.parse(iterator.next());

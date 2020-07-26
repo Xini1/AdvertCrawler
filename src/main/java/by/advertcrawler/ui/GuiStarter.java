@@ -1,6 +1,7 @@
 package by.advertcrawler.ui;
 
 import by.advertcrawler.model.AdvertContainer;
+import by.advertcrawler.ui.controller.MainWindowController;
 import by.advertcrawler.utils.FileUtils;
 import javafx.application.Application;
 import javafx.application.HostServices;
@@ -28,12 +29,13 @@ public class GuiStarter extends Application {
         AdvertContainer container = AdvertContainer.parseCsv(fileUtils.readFromFile(ADVERT_CONTAINER_SAVE_PATH));
         controller.setContainer(container);
         stage.setOnShowing(windowEvent -> controller.changeView());
-        stage.setOnHiding(windowEvent -> fileUtils.writeToFile(container.toCsv(), ADVERT_CONTAINER_SAVE_PATH));
+        stage.setOnHiding(windowEvent -> fileUtils.writeToFile(controller.getContainer().toCsv(),
+                ADVERT_CONTAINER_SAVE_PATH));
 
         Scene scene = new Scene(root);
 
         stage.setScene(scene);
-        stage.setTitle("Объявления о продаже квартир на сайте www.moyareklama.by");
+        stage.setTitle("Объявления о продаже квартир в г. Гомель на сайте www.moyareklama.by");
 
         stage.getProperties().put(HostServices.class, getHostServices());
         stage.show();

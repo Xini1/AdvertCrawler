@@ -29,15 +29,20 @@ public class AdvertBuilder implements Callable<Advert> {
     private PriceHistory priceHistory;
     private List<String> phoneNumbers;
 
-    public AdvertBuilder(LocalDate date, String advertUrl) {
+    private AdvertCrawlerTask task;
+
+    public AdvertBuilder(LocalDate date, String advertUrl, AdvertCrawlerTask task) {
         this.date = date;
         this.advertUrl = advertUrl;
+        this.task = task;
     }
 
     @Override
     public Advert call() {
         parsePage();
-        return getAdvert();
+        Advert advert = getAdvert();
+        task.updateProgressProperty();
+        return advert;
     }
 
     private void parsePage() {

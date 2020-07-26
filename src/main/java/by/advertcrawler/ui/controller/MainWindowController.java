@@ -1,7 +1,8 @@
-package by.advertcrawler.ui;
+package by.advertcrawler.ui.controller;
 
 import by.advertcrawler.model.Advert;
 import by.advertcrawler.model.AdvertContainer;
+import by.advertcrawler.ui.AdvertViewMode;
 import javafx.application.HostServices;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -90,6 +91,10 @@ public class MainWindowController {
         configAdvertsListView();
         configButtons();
         configFavoriteCheckBox();
+    }
+
+    public AdvertContainer getContainer() {
+        return container;
     }
 
     public void setContainer(AdvertContainer container) {
@@ -189,6 +194,8 @@ public class MainWindowController {
 
             Parent root = loader.load();
             RefreshAdvertContainerWindowController controller = loader.getController();
+            controller.setMainWindowController(this);
+            controller.setOldContainer(container);
 
             Scene scene = new Scene(root);
 
@@ -197,6 +204,8 @@ public class MainWindowController {
             stage.setTitle("Обновление базы объявлений");
             stage.initOwner(openWindowRefreshAdvertContainerButton.getScene().getWindow());
             stage.initModality(Modality.WINDOW_MODAL);
+            stage.setOnShowing(windowEvent -> controller.run());
+            stage.setOnHiding(windowEvent -> controller.shutdown());
 
             stage.showAndWait();
         } catch (IOException e) {
@@ -214,7 +223,10 @@ public class MainWindowController {
             NewAdvertPhoneNumbersWindowController controller = loader.getController();
 
             String phoneNumbers = container.getNewAdverts().stream()
-                    .map(advert -> advert.getPhoneNumbers().get(0))
+                    .map(advert -> {
+                        List<String> phoneNumbersList = advert.getPhoneNumbers();
+                        return phoneNumbersList.isEmpty() ? null : phoneNumbersList.get(0);
+                    })
                     .filter(Objects::nonNull)
                     .distinct()
                     .collect(Collectors.joining(";"));

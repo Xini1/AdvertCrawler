@@ -2,49 +2,82 @@ package by.advertcrawler.crawling;
 
 import by.advertcrawler.model.Advert;
 import by.advertcrawler.model.AdvertContainer;
+import by.advertcrawler.utils.AdvertContainerMerger;
+import by.advertcrawler.utils.PageParser;
+import javafx.concurrent.Task;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import by.advertcrawler.utils.PageParser;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-public class AdvertCrawler {
+public class AdvertCrawlerTask extends Task<AdvertContainer> {
 
     private String searchResultsUrl;
     private LocalDate date;
     private ExecutorService executorService;
+    private AdvertContainer oldContainer;
+
+    private volatile int targetProgress;
+    private volatile int currentProgress;
 
     private Logger logger = Logger.getLogger(getClass().getName());
 
-    public AdvertCrawler(String searchResultsUrl) {
-        this.searchResultsUrl = searchResultsUrl;
+    public AdvertCrawlerTask() {
         date = LocalDate.now();
         executorService = Executors.newFixedThreadPool(10);
     }
 
-    public AdvertContainer getAdvertContainer() {
-        AdvertContainer container = new AdvertContainer();
-        container.setCreationDate(date);
-        int pagesTotal = getPagesTotal();
-        try {
-            List<String> advertLinks = getAdvertLinks(pagesTotal);
-            List<Advert> adverts = parseAdverts(advertLinks);
-            container.setAdverts(adverts);
-            executorService.shutdown();
-        } catch (InterruptedException e) {
-            logger.log(Level.WARNING, "Interrupted while waiting", e);
-            Thread.currentThread().interrupt();
-        }
-        return container;
+    public void setSearchResultsUrl(String searchResultsUrl) {
+        this.searchResultsUrl = searchResultsUrl;
     }
 
-    private int getPagesTotal() {
+    public void setOldContainer(AdvertContainer oldContainer) {
+        this.oldContainer = oldContainer;
+    }
+
+    @Override
+    protected AdvertContainer call() throws Exception {
+        updateMessage("Подготовка...");
+
+        AdvertContainer container = new AdvertContainer();
+        container.setCreationDate(date);
+
+        updateMessage("Получаем количество страниц в поиске...");
+        int pagesTotal = getPagesTotal();
+
+        targetProgress = pagesTotal * 21;
+        currentProgress = 0;
+        updateProgress(currentProgress, targetProgress);
+
+        updateMessage("Получаем ссылки на объявления...");
+        List<String> advertLinks = getAdvertLinks(pagesTotal);
+        targetProgress = pagesTotal + advertLinks.size();
+
+        updateMessage("Сканируем страницы с объявлениями...");
+        List<Advert> adverts = parseAdverts(advertLinks);
+
+        container.setAdverts(adverts);
+        executorService.shutdown();
+
+        updateMessage("Выполняем слияние объявлений....");
+        AdvertContainerMerger merger = new AdvertContainerMerger();
+        AdvertContainer mergedContainer = merger.merge(oldContainer, container);
+        updateProgress(targetProgress, targetProgress);
+
+        updateMessage("Готово!");
+
+        return mergedContainer;
+    }
+
+    public int getPagesTotal() {
         Document document;
         try {
             document = Jsoup.connect(searchResultsUrl).get();
@@ -63,12 +96,12 @@ public class AdvertCrawler {
                 .orElse(1);
     }
 
-    private List<String> getAdvertLinks(int pagesTotal) throws InterruptedException {
+    public List<String> getAdvertLinks(int pagesTotal) throws InterruptedException {
         List<Callable<List<String>>> tasks = new ArrayList<>();
 
         for (int i = 1; i <= pagesTotal; i++) {
             String pageUrl = searchResultsUrl + i + '/';
-            tasks.add(new SearchPageScanner(pageUrl));
+            tasks.add(new SearchPageScanner(pageUrl, this));
         }
 
         List<Future<List<String>>> futures = executorService.invokeAll(tasks);
@@ -92,9 +125,9 @@ public class AdvertCrawler {
                 .collect(Collectors.toList());
     }
 
-    private List<Advert> parseAdverts(List<String> advertLinks) throws InterruptedException {
+    public List<Advert> parseAdverts(List<String> advertLinks) throws InterruptedException {
         List<Callable<Advert>> tasks = advertLinks.stream()
-                .map(advertUrl -> new AdvertBuilder(date, advertUrl))
+                .map(advertUrl -> new AdvertBuilder(date, advertUrl, this))
                 .collect(Collectors.toList());
 
         List<Future<Advert>> futures = executorService.invokeAll(tasks);
@@ -114,5 +147,10 @@ public class AdvertCrawler {
                 })
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
+    }
+
+    public synchronized void updateProgressProperty() {
+        currentProgress ++;
+        updateProgress(currentProgress, targetProgress);
     }
 }

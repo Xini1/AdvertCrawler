@@ -1,4 +1,4 @@
-package by.advertcrawler.ui;
+package by.advertcrawler.ui.controller;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;

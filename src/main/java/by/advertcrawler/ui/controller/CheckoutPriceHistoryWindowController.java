@@ -1,4 +1,4 @@
-package by.advertcrawler.ui;
+package by.advertcrawler.ui.controller;
 
 import by.advertcrawler.model.PriceHistory;
 import javafx.beans.property.SimpleIntegerProperty;
