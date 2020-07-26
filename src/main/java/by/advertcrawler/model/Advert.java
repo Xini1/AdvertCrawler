@@ -193,20 +193,4 @@ public class Advert {
     public int hashCode() {
         return Objects.hash(advertUrl);
     }
-
-    @Override
-    public String toString() {
-        return "Advert{" +
-                "advertUrl='" + advertUrl + '\'' +
-                ", title='" + title + '\'' +
-                ", address='" + address + '\'' +
-                ", area=" + area +
-                ", floor=" + floor +
-                ", totalFloors=" + totalFloors +
-                ", priceHistoryDeque=" + priceHistoryDeque +
-                ", phoneNumbers=" + phoneNumbers +
-                ", lastRefreshDate=" + lastRefreshDate +
-                ", isFavorite=" + isFavorite +
-                '}';
-    }
 }

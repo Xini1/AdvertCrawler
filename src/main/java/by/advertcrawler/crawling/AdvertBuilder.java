@@ -31,6 +31,8 @@ public class AdvertBuilder implements Callable<Advert> {
 
     private AdvertCrawlerTask task;
 
+    private Logger logger = Logger.getLogger(getClass().getName());
+
     public AdvertBuilder(LocalDate date, String advertUrl, AdvertCrawlerTask task) {
         this.date = date;
         this.advertUrl = advertUrl;
@@ -39,22 +41,31 @@ public class AdvertBuilder implements Callable<Advert> {
 
     @Override
     public Advert call() {
-        parsePage();
-        Advert advert = getAdvert();
         task.updateProgressProperty();
-        return advert;
-    }
 
-    private void parsePage() {
         Document document;
         try {
             document = Jsoup.connect(advertUrl).get();
         } catch (IOException e) {
-            Logger.getLogger(getClass().getName())
-                    .log(Level.WARNING, e, () -> "Could not connect to advert page " + advertUrl);
-            return;
+            logger.log(Level.WARNING, e, () -> "Could not connect to advert page " + advertUrl);
+            return null;
         }
 
+        String owner = new PageParser(document)
+                .selectElementsWithClass("div", "spec_address")
+                .getAsTextFirst()
+                .trim();
+
+        if (!owner.equals("Собственник")) {
+            logger.info(() -> owner + " not allowed. Returning null.");
+            return null;
+        }
+
+        parsePage(document);
+        return getAdvert();
+    }
+
+    private void parsePage(Document document) {
         title = new PageParser(document)
                 .selectElementsWithClass("div", "title")
                 .selectElements("span")
@@ -113,6 +124,7 @@ public class AdvertBuilder implements Callable<Advert> {
                 .getAsTextFirst();
 
         if (!priceOnPage.endsWith("р.")) {
+            logger.info(() -> "Could not parse price on page " + priceOnPage);
             return constructedPriceHistory;
         }
 
@@ -141,10 +153,8 @@ public class AdvertBuilder implements Callable<Advert> {
                 .filter(phoneString -> phoneString.length() >= 6)
                 .map(phoneString -> phoneString.startsWith("80") ?
                         phoneString.replaceFirst("80", "+375") : phoneString)
-                //.peek(System.out::println)
                 .map(phoneString -> phoneString.length() == 6 ?
                         "+375232" + phoneString : phoneString)
-                //.peek(System.out::println)
                 .filter(phoneString -> phoneString.matches("\\+375\\d{9}"))
                 .collect(Collectors.toList());
     }

@@ -10,7 +10,6 @@ import java.util.stream.Collectors;
 public class AdvertContainer {
 
     private LocalDate creationDate;
-
     private List<Advert> adverts;
 
     public LocalDate getCreationDate() {
@@ -76,13 +75,5 @@ public class AdvertContainer {
                 .collect(Collectors.joining("\n"));
 
         return creationDate.toString() + "\n" + advertsCsvString;
-    }
-
-    @Override
-    public String toString() {
-        return "AdvertContainer{" +
-                "creationDate=" + creationDate +
-                ", adverts=" + adverts +
-                '}';
     }
 }

@@ -84,6 +84,8 @@ public class MainWindowController {
     private AdvertContainer container;
     private Advert shownAdvert;
 
+    private Logger logger = Logger.getLogger(getClass().getName());
+
     @FXML
     public void initialize() {
         configSearchTextField();
@@ -183,8 +185,7 @@ public class MainWindowController {
 
             stage.showAndWait();
         } catch (IOException e) {
-            Logger.getLogger(getClass().getName())
-                    .log(Level.SEVERE, "Could not load price history window", e);
+            logger.log(Level.SEVERE, "Could not load price history window", e);
         }
     }
 
@@ -209,8 +210,7 @@ public class MainWindowController {
 
             stage.showAndWait();
         } catch (IOException e) {
-            Logger.getLogger(getClass().getName())
-                    .log(Level.SEVERE, "Could not load refresh advert container window", e);
+            logger.log(Level.SEVERE, "Could not load refresh advert container window", e);
         }
     }
 
@@ -242,8 +242,7 @@ public class MainWindowController {
 
             stage.showAndWait();
         } catch (IOException e) {
-            Logger.getLogger(getClass().getName())
-                    .log(Level.SEVERE, "Could not load refresh advert container window", e);
+            logger.log(Level.SEVERE, "Could not load refresh advert container window", e);
         }
     }
 

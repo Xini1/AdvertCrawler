@@ -9,11 +9,13 @@ import java.util.logging.Logger;
 
 public class FileUtils {
 
+    private Logger logger = Logger.getLogger(getClass().getName());
+
     public void writeToFile(String text, String fileName) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
             writer.write(text);
         } catch (IOException e) {
-            Logger.getLogger(getClass().getName()).log(Level.WARNING, e, () -> "Could not write to file " + fileName);
+            logger.log(Level.WARNING, e, () -> "Could not write to file " + fileName);
         }
     }
 
@@ -25,7 +27,7 @@ public class FileUtils {
                 lines.add(scanner.nextLine());
             }
         } catch (FileNotFoundException e) {
-            Logger.getLogger(getClass().getName()).log(Level.WARNING, e, () -> "Could not read from file " + fileName);
+            logger.log(Level.WARNING, e, () -> "Could not read from file " + fileName);
         }
 
         return String.join("\n", lines);
