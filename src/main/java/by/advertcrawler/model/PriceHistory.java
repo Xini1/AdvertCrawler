@@ -54,12 +54,4 @@ public class PriceHistory {
     public int hashCode() {
         return Objects.hash(price);
     }
-
-    @Override
-    public String toString() {
-        return "PriceHistory{" +
-                "price=" + price +
-                ", date=" + date +
-                '}';
-    }
 }

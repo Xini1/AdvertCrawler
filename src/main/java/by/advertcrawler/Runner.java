@@ -10,14 +10,16 @@ import java.util.logging.Logger;
 
 public class Runner {
 
+    private static Logger logger = Logger.getLogger(Runner.class.getName());
+
+
     public static void main(String[] args) {
         loadLoggingProperties();
 
         try {
             GuiStarter.run(args);
         } catch (Exception e) {
-            Logger.getLogger(Runner.class.getName())
-                    .log(Level.SEVERE, "Unexpected exception occurred", e);
+            logger.log(Level.SEVERE, "Unexpected exception occurred", e);
         }
     }
 
@@ -26,8 +28,7 @@ public class Runner {
             LogManager.getLogManager().readConfiguration(
                     new FileInputStream("src/main/resources/logging.properties"));
         } catch (IOException e) {
-            Logger.getLogger(Runner.class.getName())
-                    .log(Level.SEVERE, "Could not load logging.properties file", e);
+            logger.log(Level.SEVERE, "Could not load logging.properties file", e);
         }
     }
 }

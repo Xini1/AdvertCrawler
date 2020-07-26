@@ -1,6 +1,7 @@
 package by.advertcrawler.ui;
 
 public enum AdvertViewMode {
+
     ALL("Все"),
     NEW("Новые"),
     FAVORITE("Избранные");

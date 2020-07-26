@@ -31,6 +31,8 @@ public class AdvertBuilder implements Callable<Advert> {
 
     private AdvertCrawlerTask task;
 
+    private Logger logger = Logger.getLogger(getClass().getName());
+
     public AdvertBuilder(LocalDate date, String advertUrl, AdvertCrawlerTask task) {
         this.date = date;
         this.advertUrl = advertUrl;
@@ -45,8 +47,7 @@ public class AdvertBuilder implements Callable<Advert> {
         try {
             document = Jsoup.connect(advertUrl).get();
         } catch (IOException e) {
-            Logger.getLogger(getClass().getName())
-                    .log(Level.WARNING, e, () -> "Could not connect to advert page " + advertUrl);
+            logger.log(Level.WARNING, e, () -> "Could not connect to advert page " + advertUrl);
             return null;
         }
 
@@ -56,6 +57,7 @@ public class AdvertBuilder implements Callable<Advert> {
                 .trim();
 
         if (!owner.equals("Собственник")) {
+            logger.info(() -> owner + " not allowed. Returning null.");
             return null;
         }
 
@@ -122,6 +124,7 @@ public class AdvertBuilder implements Callable<Advert> {
                 .getAsTextFirst();
 
         if (!priceOnPage.endsWith("р.")) {
+            logger.info(() -> "Could not parse price on page " + priceOnPage);
             return constructedPriceHistory;
         }
 
@@ -150,10 +153,8 @@ public class AdvertBuilder implements Callable<Advert> {
                 .filter(phoneString -> phoneString.length() >= 6)
                 .map(phoneString -> phoneString.startsWith("80") ?
                         phoneString.replaceFirst("80", "+375") : phoneString)
-                //.peek(System.out::println)
                 .map(phoneString -> phoneString.length() == 6 ?
                         "+375232" + phoneString : phoneString)
-                //.peek(System.out::println)
                 .filter(phoneString -> phoneString.matches("\\+375\\d{9}"))
                 .collect(Collectors.toList());
     }

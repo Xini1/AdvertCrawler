@@ -52,6 +52,7 @@ public class AdvertCrawlerTask extends Task<AdvertContainer> {
 
         updateMessage("Получаем количество страниц в поиске...");
         int pagesTotal = getPagesTotal();
+        logger.info(() -> "Total number of pages: " + pagesTotal);
 
         targetProgress = pagesTotal * 21;
         currentProgress = 0;
@@ -60,9 +61,11 @@ public class AdvertCrawlerTask extends Task<AdvertContainer> {
         updateMessage("Получаем ссылки на объявления...");
         List<String> advertLinks = getAdvertLinks(pagesTotal);
         targetProgress = pagesTotal + advertLinks.size();
+        logger.info(() -> "Total number of collected advert urls: " + advertLinks.size());
 
         updateMessage("Сканируем страницы с объявлениями...");
         List<Advert> adverts = parseAdverts(advertLinks);
+        logger.info(() -> "Total numbers of parsed adverts: " + adverts.size());
 
         container.setAdverts(adverts);
         executorService.shutdown();
@@ -150,7 +153,7 @@ public class AdvertCrawlerTask extends Task<AdvertContainer> {
     }
 
     public synchronized void updateProgressProperty() {
-        currentProgress ++;
+        currentProgress++;
         updateProgress(currentProgress, targetProgress);
     }
 }
