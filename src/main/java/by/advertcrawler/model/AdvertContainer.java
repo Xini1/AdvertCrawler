@@ -1,4 +1,4 @@
-package model;
+package by.advertcrawler.model;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -29,12 +29,32 @@ public class AdvertContainer {
         this.adverts = adverts;
     }
 
+    public List<Advert> getNewAdverts() {
+        return adverts.stream()
+                .filter(Advert::isNew)
+                .collect(Collectors.toList());
+    }
+
+    public List<Advert> getFavoriteAdverts() {
+        return adverts.stream()
+                .filter(Advert::isFavorite)
+                .collect(Collectors.toList());
+    }
+
     public static AdvertContainer parseCsv(String csvString) {
         AdvertContainer container = new AdvertContainer();
 
+        if (csvString.isEmpty()) {
+            container.setCreationDate(LocalDate.now());
+            container.setAdverts(new ArrayList<>());
+            return container;
+        }
+
         List<String> list = Arrays.stream(csvString.split("\n"))
                 .flatMap(s -> Arrays.stream(s.split(";")))
+                .filter(s -> !s.isEmpty())
                 .collect(Collectors.toList());
+
         Iterator<String> iterator = list.iterator();
 
         LocalDate creationDate = LocalDate.parse(iterator.next());

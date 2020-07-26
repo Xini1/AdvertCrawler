@@ -1,8 +1,8 @@
-package utils;
+package by.advertcrawler.utils;
 
-import model.Advert;
-import model.AdvertContainer;
-import model.PriceHistory;
+import by.advertcrawler.model.Advert;
+import by.advertcrawler.model.AdvertContainer;
+import by.advertcrawler.model.PriceHistory;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -26,6 +26,7 @@ public class AdvertContainerMerger {
 
                 editAdvert(target, newerAdvert);
                 target.setLastRefreshDate(updatingDate);
+                target.setNew(false);
 
                 newerAdverts.remove(index);
             }

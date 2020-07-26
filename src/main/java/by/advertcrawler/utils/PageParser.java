@@ -1,4 +1,4 @@
-package utils;
+package by.advertcrawler.utils;
 
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;

@@ -1,10 +1,10 @@
-package crawling;
+package by.advertcrawler.crawling;
 
-import model.Advert;
-import model.PriceHistory;
+import by.advertcrawler.model.Advert;
+import by.advertcrawler.model.PriceHistory;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import utils.PageParser;
+import by.advertcrawler.utils.PageParser;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -29,15 +29,20 @@ public class AdvertBuilder implements Callable<Advert> {
     private PriceHistory priceHistory;
     private List<String> phoneNumbers;
 
-    public AdvertBuilder(LocalDate date, String advertUrl) {
+    private AdvertCrawlerTask task;
+
+    public AdvertBuilder(LocalDate date, String advertUrl, AdvertCrawlerTask task) {
         this.date = date;
         this.advertUrl = advertUrl;
+        this.task = task;
     }
 
     @Override
-    public Advert call() throws Exception {
+    public Advert call() {
         parsePage();
-        return getAdvert();
+        Advert advert = getAdvert();
+        task.updateProgressProperty();
+        return advert;
     }
 
     private void parsePage() {
@@ -100,22 +105,22 @@ public class AdvertBuilder implements Callable<Advert> {
     }
 
     private PriceHistory getPrice(Document document) {
-        PriceHistory priceHistory = new PriceHistory();
-        priceHistory.setDate(date);
+        PriceHistory constructedPriceHistory = new PriceHistory();
+        constructedPriceHistory.setDate(date);
 
         String priceOnPage = new PageParser(document)
                 .selectElementsWithClass("div", "price")
                 .getAsTextFirst();
 
         if (!priceOnPage.endsWith("р.")) {
-            return priceHistory;
+            return constructedPriceHistory;
         }
 
         String priceString = String.join("", findNumbersInString(priceOnPage));
 
-        priceHistory.setPrice(Integer.parseInt(priceString));
+        constructedPriceHistory.setPrice(Integer.parseInt(priceString));
 
-        return priceHistory;
+        return constructedPriceHistory;
     }
 
     private List<String> parsePhoneNumber(Document document) {
@@ -166,6 +171,7 @@ public class AdvertBuilder implements Callable<Advert> {
         advert.setPhoneNumbers(phoneNumbers);
         advert.setLastRefreshDate(date);
         advert.setFavorite(false);
+        advert.setNew(true);
 
         Deque<PriceHistory> priceHistoryDeque = new LinkedList<>();
         priceHistoryDeque.offerFirst(priceHistory);

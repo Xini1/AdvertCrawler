@@ -1,4 +1,4 @@
-package utils;
+package by.advertcrawler.utils;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -7,7 +7,7 @@ import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class FilesUtils {
+public class FileUtils {
 
     public void writeToFile(String text, String fileName) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
