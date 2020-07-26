@@ -2,10 +2,15 @@ package by.advertcrawler.ui.controller;
 
 import by.advertcrawler.model.AdvertContainer;
 import by.advertcrawler.crawling.AdvertCrawlerTask;
+import by.advertcrawler.ui.GuiStarter;
+import by.advertcrawler.utils.FileUtils;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 
+import java.io.File;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -51,10 +56,26 @@ public class RefreshAdvertContainerWindowController {
     }
 
     private void updateAdvertContainer() {
+        backupContainer();
         AdvertContainer newContainer = task.getValue();
         mainWindowController.setContainer(newContainer);
         mainWindowController.changeView();
         progressBar.getScene().getWindow().hide();
+    }
+
+    private void backupContainer() {
+        FileUtils fileUtils = new FileUtils();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd, hh-mm-ss");
+
+        if (!new File("backups").mkdir()) {
+            return;
+        }
+
+        String destination = String.format("backups/%s(%s).save", oldContainer.getClass().getName(),
+                formatter.format(LocalDateTime.now()));
+
+        String content = fileUtils.readFromFile(GuiStarter.ADVERT_CONTAINER_SAVE_PATH);
+        fileUtils.writeToFile(content, destination);
     }
 
     public void shutdown() {
