@@ -26,7 +26,7 @@ public class Runner {
     private static void loadLoggingProperties() {
         try {
             LogManager.getLogManager().readConfiguration(
-                    new FileInputStream("src/main/resources/logging.properties"));
+                    new FileInputStream("logging.properties"));
         } catch (IOException e) {
             logger.log(Level.SEVERE, "Could not load logging.properties file", e);
         }

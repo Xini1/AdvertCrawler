@@ -70,7 +70,8 @@ public class RefreshAdvertContainerWindowController {
         FileUtils fileUtils = new FileUtils();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd, hh-mm-ss");
 
-        if (!new File("backups").mkdir()) {
+        File backupsDirectory = new File("backups");
+        if (!backupsDirectory.exists() && !backupsDirectory.mkdir()) {
             logger.warning("Could not create backups directory");
             return;
         }
@@ -78,8 +79,7 @@ public class RefreshAdvertContainerWindowController {
         String destination = String.format("backups/%s(%s).save", oldContainer.getClass().getName(),
                 formatter.format(LocalDateTime.now()));
 
-        String content = fileUtils.readFromFile(GuiStarter.ADVERT_CONTAINER_SAVE_PATH);
-        fileUtils.writeToFile(content, destination);
+        fileUtils.writeToFile(oldContainer.toCsv(), destination);
     }
 
     public void shutdown() {
