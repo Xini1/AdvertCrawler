@@ -1,4 +1,4 @@
-package by.advertcrawler.ui;
+package by.pakodan.ui;
 
 public enum AdvertViewMode {
 

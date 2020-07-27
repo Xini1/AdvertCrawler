@@ -1,8 +1,8 @@
-package by.advertcrawler.ui;
+package by.pakodan.ui;
 
-import by.advertcrawler.model.AdvertContainer;
-import by.advertcrawler.ui.controller.MainWindowController;
-import by.advertcrawler.utils.FileUtils;
+import by.pakodan.model.AdvertContainer;
+import by.pakodan.ui.controller.MainWindowController;
+import by.pakodan.utils.FileUtils;
 import javafx.application.Application;
 import javafx.application.HostServices;
 import javafx.fxml.FXMLLoader;

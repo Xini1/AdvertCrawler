@@ -1,8 +1,8 @@
-package by.advertcrawler.utils;
+package by.pakodan.utils;
 
-import by.advertcrawler.model.Advert;
-import by.advertcrawler.model.AdvertContainer;
-import by.advertcrawler.model.PriceHistory;
+import by.pakodan.model.Advert;
+import by.pakodan.model.AdvertContainer;
+import by.pakodan.model.PriceHistory;
 
 import java.time.LocalDate;
 import java.util.ArrayList;

@@ -1,9 +1,9 @@
-package by.advertcrawler.crawling;
+package by.pakodan.crawling;
 
-import by.advertcrawler.model.Advert;
-import by.advertcrawler.model.AdvertContainer;
-import by.advertcrawler.utils.AdvertContainerMerger;
-import by.advertcrawler.utils.PageParser;
+import by.pakodan.model.Advert;
+import by.pakodan.model.AdvertContainer;
+import by.pakodan.utils.AdvertContainerMerger;
+import by.pakodan.utils.PageParser;
 import javafx.concurrent.Task;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;

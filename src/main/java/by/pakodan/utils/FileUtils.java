@@ -1,4 +1,4 @@
-package by.advertcrawler.utils;
+package by.pakodan.utils;
 
 import java.io.*;
 import java.util.ArrayList;

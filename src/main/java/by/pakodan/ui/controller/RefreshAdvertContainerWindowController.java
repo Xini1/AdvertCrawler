@@ -1,9 +1,9 @@
-package by.advertcrawler.ui.controller;
+package by.pakodan.ui.controller;
 
-import by.advertcrawler.model.AdvertContainer;
-import by.advertcrawler.crawling.AdvertCrawlerTask;
-import by.advertcrawler.ui.GuiStarter;
-import by.advertcrawler.utils.FileUtils;
+import by.pakodan.model.AdvertContainer;
+import by.pakodan.crawling.AdvertCrawlerTask;
+import by.pakodan.ui.GuiStarter;
+import by.pakodan.utils.FileUtils;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;

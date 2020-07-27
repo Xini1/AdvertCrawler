@@ -5,7 +5,7 @@
 <?import javafx.scene.control.ProgressBar?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox spacing="10.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="by.advertcrawler.ui.controller.RefreshAdvertContainerWindowController">
+<VBox spacing="10.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="by.pakodan.ui.controller.RefreshAdvertContainerWindowController">
    <children>
       <Label fx:id="statusLabel" text="Label" />
       <ProgressBar fx:id="progressBar" prefWidth="500.0" />

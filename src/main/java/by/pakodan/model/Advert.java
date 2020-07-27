@@ -1,4 +1,4 @@
-package by.advertcrawler.model;
+package by.pakodan.model;
 
 import java.time.LocalDate;
 import java.util.*;

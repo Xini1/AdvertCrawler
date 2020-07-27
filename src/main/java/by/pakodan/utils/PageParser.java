@@ -1,4 +1,4 @@
-package by.advertcrawler.utils;
+package by.pakodan.utils;
 
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;

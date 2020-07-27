@@ -1,6 +1,6 @@
-package by.advertcrawler.ui.controller;
+package by.pakodan.ui.controller;
 
-import by.advertcrawler.model.PriceHistory;
+import by.pakodan.model.PriceHistory;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.ObservableList;

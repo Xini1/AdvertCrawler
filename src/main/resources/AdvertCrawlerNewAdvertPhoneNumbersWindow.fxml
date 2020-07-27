@@ -9,7 +9,7 @@
 <?import javafx.scene.text.Text?>
 <?import javafx.scene.text.TextFlow?>
 
-<BorderPane xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="by.advertcrawler.ui.controller.NewAdvertPhoneNumbersWindowController">
+<BorderPane xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="by.pakodan.ui.controller.NewAdvertPhoneNumbersWindowController">
    <bottom>
       <HBox BorderPane.alignment="CENTER">
          <children>

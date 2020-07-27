@@ -1,6 +1,6 @@
-package by.advertcrawler;
+package by.pakodan;
 
-import by.advertcrawler.ui.GuiStarter;
+import by.pakodan.ui.GuiStarter;
 
 import java.io.FileInputStream;
 import java.io.IOException;
