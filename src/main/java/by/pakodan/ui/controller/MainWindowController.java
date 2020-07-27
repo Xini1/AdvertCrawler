@@ -84,7 +84,7 @@ public class MainWindowController {
     private AdvertContainer container;
     private Advert shownAdvert;
 
-    private Logger logger = Logger.getLogger(getClass().getName());
+    private final Logger logger = Logger.getLogger(getClass().getName());
 
     @FXML
     public void initialize() {

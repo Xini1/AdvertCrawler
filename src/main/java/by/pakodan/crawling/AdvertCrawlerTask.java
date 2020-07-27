@@ -28,7 +28,7 @@ public class AdvertCrawlerTask extends Task<AdvertContainer> {
     private volatile int targetProgress;
     private volatile int currentProgress;
 
-    private Logger logger = Logger.getLogger(getClass().getName());
+    private final Logger logger = Logger.getLogger(getClass().getName());
 
     public AdvertCrawlerTask() {
         date = LocalDate.now();

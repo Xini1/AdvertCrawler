@@ -9,7 +9,7 @@ import java.util.logging.Logger;
 
 public class FileUtils {
 
-    private Logger logger = Logger.getLogger(getClass().getName());
+    private final Logger logger = Logger.getLogger(getClass().getName());
 
     public void writeToFile(String text, String fileName) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {

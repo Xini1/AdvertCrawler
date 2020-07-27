@@ -31,7 +31,7 @@ public class AdvertBuilder implements Callable<Advert> {
 
     private AdvertCrawlerTask task;
 
-    private Logger logger = Logger.getLogger(getClass().getName());
+    private final Logger logger = Logger.getLogger(getClass().getName());
 
     public AdvertBuilder(LocalDate date, String advertUrl, AdvertCrawlerTask task) {
         this.date = date;

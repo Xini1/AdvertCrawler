@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.logging.Logger;
 
 public class RefreshAdvertContainerWindowController {
 
@@ -29,6 +30,8 @@ public class RefreshAdvertContainerWindowController {
 
     public static final String SEARCH_RESULTS_URL = "https://www.moyareklama.by/search/" +
             "%D0%93%D0%BE%D0%BC%D0%B5%D0%BB%D1%8C/c56950abe5d86434d5e08455380399be/";
+
+    private final Logger logger = Logger.getLogger(getClass().getName());
 
     public void setMainWindowController(MainWindowController mainWindowController) {
         this.mainWindowController = mainWindowController;
@@ -68,6 +71,7 @@ public class RefreshAdvertContainerWindowController {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd, hh-mm-ss");
 
         if (!new File("backups").mkdir()) {
+            logger.warning("Could not create backups directory");
             return;
         }
 
