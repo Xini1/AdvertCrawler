@@ -62,6 +62,12 @@ public class AdvertBuilder implements Callable<Advert> {
         }
 
         parsePage(document);
+
+        if (address.contains("Гомельский р-н")) {
+            logger.info(() -> address + " not allowed. Returning null.");
+            return null;
+        }
+
         return getAdvert();
     }
 
