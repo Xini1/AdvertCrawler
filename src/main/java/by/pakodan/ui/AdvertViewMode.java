@@ -4,7 +4,8 @@ public enum AdvertViewMode {
 
     ALL("Все"),
     NEW("Новые"),
-    FAVORITE("Избранные");
+    FAVORITE("Избранные"),
+    IGNORED("Игнорируемые");
 
     private String title;
 

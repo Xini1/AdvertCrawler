@@ -28,15 +28,28 @@ public class AdvertContainer {
         this.adverts = adverts;
     }
 
+    public List<Advert> getNotIgnoredAdverts() {
+        return adverts.stream()
+                .filter(advert -> advert.getStatus() != Status.IGNORED)
+                .collect(Collectors.toList());
+    }
+
     public List<Advert> getNewAdverts() {
         return adverts.stream()
                 .filter(Advert::isNew)
+                .filter(advert -> advert.getStatus() != Status.IGNORED)
                 .collect(Collectors.toList());
     }
 
     public List<Advert> getFavoriteAdverts() {
         return adverts.stream()
-                .filter(Advert::isFavorite)
+                .filter(advert -> advert.getStatus()==Status.FAVORITE)
+                .collect(Collectors.toList());
+    }
+
+    public List<Advert> getIgnoredAdverts() {
+        return adverts.stream()
+                .filter(advert -> advert.getStatus()==Status.IGNORED)
                 .collect(Collectors.toList());
     }
 

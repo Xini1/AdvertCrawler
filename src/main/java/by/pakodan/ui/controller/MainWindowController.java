@@ -2,6 +2,7 @@ package by.pakodan.ui.controller;
 
 import by.pakodan.model.Advert;
 import by.pakodan.model.AdvertContainer;
+import by.pakodan.model.Status;
 import by.pakodan.ui.AdvertViewMode;
 import javafx.application.HostServices;
 import javafx.collections.ObservableList;
@@ -64,7 +65,7 @@ public class MainWindowController {
     private Text lastRefreshDateText;
 
     @FXML
-    private CheckBox isFavoriteCheckBox;
+    private ComboBox<Status> statusComboBox;
 
     @FXML
     private Button openWindowRefreshAdvertContainerButton;
@@ -92,7 +93,7 @@ public class MainWindowController {
         configViewComboBox();
         configAdvertsListView();
         configButtons();
-        configFavoriteCheckBox();
+        configStatusComboBox();
     }
 
     public AdvertContainer getContainer() {
@@ -153,9 +154,26 @@ public class MainWindowController {
         openWindowNewAdvertPhoneNumbersButton.setOnAction(actionEvent -> openWindowNewAdvertPhoneNumbers());
     }
 
-    private void configFavoriteCheckBox() {
-        isFavoriteCheckBox.setOnAction(actionEvent -> {
-            shownAdvert.setFavorite(isFavoriteCheckBox.isSelected());
+    private void configStatusComboBox() {
+        statusComboBox.getItems().addAll(Status.values());
+        statusComboBox.setConverter(new StringConverter<>() {
+            @Override
+            public String toString(Status status) {
+                if (status == null) {
+                    return "";
+                }
+
+                return status.getTitle();
+            }
+
+            @Override
+            public Status fromString(String s) {
+                return null;
+            }
+        });
+
+        statusComboBox.setOnAction(actionEvent -> {
+            shownAdvert.setStatus(statusComboBox.getSelectionModel().getSelectedItem());
             changeView();
         });
     }
@@ -263,7 +281,7 @@ public class MainWindowController {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
         lastRefreshDateText.setText(formatter.format(shownAdvert.getLastRefreshDate()));
 
-        isFavoriteCheckBox.setSelected(shownAdvert.isFavorite());
+        statusComboBox.setValue(shownAdvert.getStatus());
 
         advertGridPane.setVisible(true);
     }
@@ -285,8 +303,11 @@ public class MainWindowController {
             case FAVORITE:
                 advertsToShow = container.getFavoriteAdverts();
                 break;
+            case IGNORED:
+                advertsToShow = container.getIgnoredAdverts();
+                break;
             default:
-                advertsToShow = container.getAdverts();
+                advertsToShow = container.getNotIgnoredAdverts();
         }
 
         return advertsToShow;
