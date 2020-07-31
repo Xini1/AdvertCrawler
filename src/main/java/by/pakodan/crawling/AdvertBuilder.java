@@ -67,7 +67,7 @@ public class AdvertBuilder implements Callable<Advert> {
                 .selectElements("a")
                 .getAsTextLast()
                 .trim();
-        System.out.println(heading);
+
         if (!heading.endsWith("р-н") || heading.equals("Гомельский р-н")) {
             logger.info(() -> "Heading " + heading + " not allowed. Returning null.");
             return null;

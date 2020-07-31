@@ -12,6 +12,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.TextFieldListCell;
+import javafx.scene.image.Image;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
 import javafx.stage.Modality;
@@ -198,6 +199,7 @@ public class MainWindowController {
             Stage stage = new Stage();
             stage.setScene(scene);
             stage.setTitle("История изменений цены");
+            stage.getIcons().add(new Image("file:advert_crawler.png"));
             stage.initOwner(openWindowCheckoutPriceHistoryButton.getScene().getWindow());
             stage.initModality(Modality.WINDOW_MODAL);
 
@@ -221,6 +223,7 @@ public class MainWindowController {
             Stage stage = new Stage();
             stage.setScene(scene);
             stage.setTitle("Обновление базы объявлений");
+            stage.getIcons().add(new Image("file:advert_crawler.png"));
             stage.initOwner(openWindowRefreshAdvertContainerButton.getScene().getWindow());
             stage.initModality(Modality.WINDOW_MODAL);
             stage.setOnShowing(windowEvent -> controller.run());
@@ -256,6 +259,7 @@ public class MainWindowController {
             Stage stage = new Stage();
             stage.setScene(scene);
             stage.setTitle("Номера телефонов из новых объявлений");
+            stage.getIcons().add(new Image("file:advert_crawler.png"));
             stage.initOwner(openWindowNewAdvertPhoneNumbersButton.getScene().getWindow());
             stage.initModality(Modality.WINDOW_MODAL);
 
