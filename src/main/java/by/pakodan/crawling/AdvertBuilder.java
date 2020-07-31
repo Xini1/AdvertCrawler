@@ -58,16 +58,22 @@ public class AdvertBuilder implements Callable<Advert> {
                 .trim();
 
         if (!owner.equals("Собственник")) {
-            logger.info(() -> owner + " not allowed. Returning null.");
+            logger.info(() -> "Owner " + owner + " not allowed. Returning null.");
+            return null;
+        }
+
+        String heading = new PageParser(document)
+                .selectElementsWithClass("div", "breadCrumbs")
+                .selectElements("a")
+                .getAsTextLast()
+                .trim();
+        System.out.println(heading);
+        if (!heading.endsWith("р-н") || heading.equals("Гомельский р-н")) {
+            logger.info(() -> "Heading " + heading + " not allowed. Returning null.");
             return null;
         }
 
         parsePage(document);
-
-        if (address.contains("Гомельский р-н")) {
-            logger.info(() -> address + " not allowed. Returning null.");
-            return null;
-        }
 
         return getAdvert();
     }
@@ -131,7 +137,7 @@ public class AdvertBuilder implements Callable<Advert> {
                 .getAsTextFirst();
 
         if (!priceOnPage.endsWith("р.")) {
-            logger.info(() -> "Could not parse price on page " + priceOnPage);
+            logger.info(() -> "Could not parse price " + priceOnPage + " on page " + advertUrl);
             return constructedPriceHistory;
         }
 

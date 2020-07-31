@@ -68,7 +68,7 @@ public class RefreshAdvertContainerWindowController {
 
     private void backupContainer() {
         FileUtils fileUtils = new FileUtils();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy, hh/mm");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy, hh-mm");
 
         File backupsDirectory = new File("backups");
         if (!backupsDirectory.exists() && !backupsDirectory.mkdir()) {
