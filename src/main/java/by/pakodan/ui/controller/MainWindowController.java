@@ -246,6 +246,7 @@ public class MainWindowController {
                         return phoneNumbersList.isEmpty() ? null : phoneNumbersList.get(0);
                     })
                     .filter(Objects::nonNull)
+                    .filter(phoneNumber -> !phoneNumber.startsWith("+375232"))
                     .distinct()
                     .collect(Collectors.joining(";"));
             controller.setText(phoneNumbers);

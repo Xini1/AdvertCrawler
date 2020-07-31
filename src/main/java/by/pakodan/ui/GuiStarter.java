@@ -12,7 +12,7 @@ import javafx.stage.Stage;
 
 public class GuiStarter extends Application {
 
-    public static final String ADVERT_CONTAINER_SAVE_PATH = AdvertContainer.class.getName() + ".save";
+    public static final String ADVERT_CONTAINER_SAVE_PATH = AdvertContainer.class.getName() + ".csv";
 
     public static void run(String[] args) {
         launch(args);
