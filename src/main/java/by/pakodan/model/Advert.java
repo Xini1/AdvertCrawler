@@ -15,7 +15,7 @@ public class Advert {
     private Deque<PriceHistory> priceHistoryDeque;
     private List<String> phoneNumbers;
     private LocalDate lastRefreshDate;
-    private boolean isFavorite;
+    private Status status;
     private boolean isNew;
 
     public String getAdvertUrl() {
@@ -90,12 +90,12 @@ public class Advert {
         this.lastRefreshDate = lastRefreshDate;
     }
 
-    public boolean isFavorite() {
-        return isFavorite;
+    public Status getStatus() {
+        return status;
     }
 
-    public void setFavorite(boolean favorite) {
-        isFavorite = favorite;
+    public void setStatus(Status status) {
+        this.status = status;
     }
 
     public boolean isNew() {
@@ -141,7 +141,7 @@ public class Advert {
         advert.setPhoneNumbers(phoneNumbers);
 
         advert.setLastRefreshDate(LocalDate.parse(iterator.next()));
-        advert.setFavorite(Boolean.parseBoolean(iterator.next()));
+        advert.setStatus(Status.valueOf(iterator.next()));
         advert.setNew(Boolean.parseBoolean(iterator.next()));
 
         return advert;
@@ -169,7 +169,7 @@ public class Advert {
 
         builder.append(phoneNumbersCsvString).append(';')
                 .append(lastRefreshDate).append(';')
-                .append(isFavorite).append(';')
+                .append(status).append(';')
                 .append(isNew);
 
         return builder.toString();

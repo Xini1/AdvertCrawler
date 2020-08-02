@@ -68,7 +68,7 @@ public class RefreshAdvertContainerWindowController {
 
     private void backupContainer() {
         FileUtils fileUtils = new FileUtils();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd, hh-mm-ss");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy, hh-mm");
 
         File backupsDirectory = new File("backups");
         if (!backupsDirectory.exists() && !backupsDirectory.mkdir()) {
@@ -76,7 +76,7 @@ public class RefreshAdvertContainerWindowController {
             return;
         }
 
-        String destination = String.format("backups/%s(%s).save", oldContainer.getClass().getName(),
+        String destination = String.format("backups/%s(%s).csv", oldContainer.getClass().getName(),
                 formatter.format(LocalDateTime.now()));
 
         fileUtils.writeToFile(oldContainer.toCsv(), destination);

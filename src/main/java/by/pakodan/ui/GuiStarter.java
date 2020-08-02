@@ -8,11 +8,15 @@ import javafx.application.HostServices;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
+
+import java.io.File;
+import java.io.FileInputStream;
 
 public class GuiStarter extends Application {
 
-    public static final String ADVERT_CONTAINER_SAVE_PATH = AdvertContainer.class.getName() + ".save";
+    public static final String ADVERT_CONTAINER_SAVE_PATH = AdvertContainer.class.getName() + ".csv";
 
     public static void run(String[] args) {
         launch(args);
@@ -36,6 +40,7 @@ public class GuiStarter extends Application {
 
         stage.setScene(scene);
         stage.setTitle("Объявления о продаже квартир в г. Гомель на сайте www.moyareklama.by");
+        stage.getIcons().add(new Image("file:advert_crawler.png"));
 
         stage.getProperties().put(HostServices.class, getHostServices());
         stage.show();

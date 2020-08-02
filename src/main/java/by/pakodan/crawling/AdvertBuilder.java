@@ -2,6 +2,7 @@ package by.pakodan.crawling;
 
 import by.pakodan.model.Advert;
 import by.pakodan.model.PriceHistory;
+import by.pakodan.model.Status;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import by.pakodan.utils.PageParser;
@@ -57,11 +58,23 @@ public class AdvertBuilder implements Callable<Advert> {
                 .trim();
 
         if (!owner.equals("Собственник")) {
-            logger.info(() -> owner + " not allowed. Returning null.");
+            logger.info(() -> "Owner " + owner + " not allowed. Returning null.");
+            return null;
+        }
+
+        String heading = new PageParser(document)
+                .selectElementsWithClass("div", "breadCrumbs")
+                .selectElements("a")
+                .getAsTextLast()
+                .trim();
+
+        if (!heading.endsWith("р-н") || heading.equals("Гомельский р-н")) {
+            logger.info(() -> "Heading " + heading + " not allowed. Returning null.");
             return null;
         }
 
         parsePage(document);
+
         return getAdvert();
     }
 
@@ -124,7 +137,7 @@ public class AdvertBuilder implements Callable<Advert> {
                 .getAsTextFirst();
 
         if (!priceOnPage.endsWith("р.")) {
-            logger.info(() -> "Could not parse price on page " + priceOnPage);
+            logger.info(() -> "Could not parse price " + priceOnPage + " on page " + advertUrl);
             return constructedPriceHistory;
         }
 
@@ -180,7 +193,7 @@ public class AdvertBuilder implements Callable<Advert> {
         advert.setTotalFloors(totalFloors);
         advert.setPhoneNumbers(phoneNumbers);
         advert.setLastRefreshDate(date);
-        advert.setFavorite(false);
+        advert.setStatus(Status.COMMON);
         advert.setNew(true);
 
         Deque<PriceHistory> priceHistoryDeque = new LinkedList<>();
