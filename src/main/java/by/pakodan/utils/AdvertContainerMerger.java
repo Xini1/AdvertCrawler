@@ -19,6 +19,8 @@ public class AdvertContainerMerger {
         List<Advert> mergedAdverts = new ArrayList<>();
 
         for (Advert target : olderAdverts) {
+            target.setNew(false);
+
             int index = newerAdverts.indexOf(target);
 
             if (index != -1) {
@@ -26,7 +28,6 @@ public class AdvertContainerMerger {
 
                 editAdvert(target, newerAdvert);
                 target.setLastRefreshDate(updatingDate);
-                target.setNew(false);
 
                 newerAdverts.remove(index);
             }

@@ -2,17 +2,21 @@ package by.pakodan.ui.controller;
 
 import by.pakodan.model.AdvertContainer;
 import by.pakodan.crawling.AdvertCrawlerTask;
-import by.pakodan.ui.GuiStarter;
 import by.pakodan.utils.FileUtils;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 
-import java.io.File;
+import java.io.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class RefreshAdvertContainerWindowController {
@@ -55,6 +59,7 @@ public class RefreshAdvertContainerWindowController {
     public void run() {
         task.setSearchResultsUrl(SEARCH_RESULTS_URL);
         task.setOldContainer(oldContainer);
+        updateSeenPhoneNumbers();
         executorService.submit(task);
     }
 
@@ -80,6 +85,31 @@ public class RefreshAdvertContainerWindowController {
                 formatter.format(LocalDateTime.now()));
 
         fileUtils.writeToFile(oldContainer.toCsv(), destination);
+    }
+
+    private void updateSeenPhoneNumbers() {
+        Set<String> seenPhoneNumbers = new HashSet<>();
+        try (ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream("SeenPhoneNumbers.save"))) {
+            seenPhoneNumbers = (Set<String>) inputStream.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            logger.log(Level.WARNING, "Could not load seen phone numbers", e);
+        }
+
+        try (ObjectOutputStream outputStream = new ObjectOutputStream(new FileOutputStream("SeenPhoneNumbers.save"))) {
+            oldContainer.getNewAdverts().stream()
+                    .map(advert -> {
+                        List<String> phoneNumbersList = advert.getPhoneNumbers();
+                        return phoneNumbersList.isEmpty() ? null : phoneNumbersList.get(0);
+                    })
+                    .filter(Objects::nonNull)
+                    .filter(phoneNumber -> !phoneNumber.startsWith("+375232"))
+                    .forEach(seenPhoneNumbers::add);
+            seenPhoneNumbers.forEach(System.out::println);
+            outputStream.writeObject(seenPhoneNumbers);
+        } catch (IOException e) {
+            logger.log(Level.WARNING, "Could not update seen phone numbers", e);
+        }
+
     }
 
     public void shutdown() {

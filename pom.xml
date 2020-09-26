@@ -6,7 +6,7 @@
 
     <groupId>by.pakodan</groupId>
     <artifactId>AdvertCrawler</artifactId>
-    <version>1.1</version>
+    <version>1.2</version>
     <dependencies>
         <dependency>
             <groupId>org.jsoup</groupId>
