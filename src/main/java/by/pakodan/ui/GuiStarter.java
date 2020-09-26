@@ -11,9 +11,6 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
-import java.io.File;
-import java.io.FileInputStream;
-
 public class GuiStarter extends Application {
 
     public static final String ADVERT_CONTAINER_SAVE_PATH = AdvertContainer.class.getName() + ".csv";

@@ -19,10 +19,14 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
 
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.time.format.DateTimeFormatter;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -243,16 +247,23 @@ public class MainWindowController {
             Parent root = loader.load();
             NewAdvertPhoneNumbersWindowController controller = loader.getController();
 
-            String phoneNumbers = container.getNewAdverts().stream()
+            Set<String> seenPhoneNumbers = getSeenPhoneNumbers();
+
+            Set<String> phoneNumbers = container.getNewAdverts().stream()
                     .map(advert -> {
                         List<String> phoneNumbersList = advert.getPhoneNumbers();
                         return phoneNumbersList.isEmpty() ? null : phoneNumbersList.get(0);
                     })
                     .filter(Objects::nonNull)
                     .filter(phoneNumber -> !phoneNumber.startsWith("+375232"))
-                    .distinct()
-                    .collect(Collectors.joining(";"));
-            controller.setText(phoneNumbers);
+                    .collect(Collectors.toSet());
+
+            Set<String> uniquePhoneNumbers = phoneNumbers.stream()
+                    .filter(phoneNumber -> !seenPhoneNumbers.contains(phoneNumber))
+                    .collect(Collectors.toSet());
+
+            controller.setPhoneNumbersText(String.join(";", phoneNumbers));
+            controller.setUniquePhoneNumbersText(String.join(";", uniquePhoneNumbers));
 
             Scene scene = new Scene(root);
 
@@ -267,6 +278,18 @@ public class MainWindowController {
         } catch (IOException e) {
             logger.log(Level.SEVERE, "Could not load refresh advert container window", e);
         }
+    }
+
+    private Set<String> getSeenPhoneNumbers() {
+        Set<String> seenPhoneNumbers = new HashSet<>();
+        try (ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream("SeenPhoneNumbers.save"))) {
+            seenPhoneNumbers = (Set<String>) inputStream.readObject();
+        } catch (ClassNotFoundException e) {
+            logger.log(Level.WARNING, "Could not find class", e);
+        } catch (IOException e) {
+            logger.log(Level.WARNING, "Could not load seen phone numbers", e);
+        }
+        return seenPhoneNumbers;
     }
 
     private void viewAdvert() {
